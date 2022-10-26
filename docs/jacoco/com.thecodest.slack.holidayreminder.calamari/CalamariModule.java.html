@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CalamariModule.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">holiday-reminder</a> &gt; <a href="index.source.html" class="el_package">com.thecodest.slack.activityrewards.calamari</a> &gt; <span class="el_source">CalamariModule.java</span></div><h1>CalamariModule.java</h1><pre class="source lang-java linenums">package com.thecodest.slack.holidayreminder.calamari;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
+import com.thecodest.slack.holidayreminder.calamari.remote.ApiClient;
+import com.thecodest.slack.holidayreminder.calamari.remote.api.AbsenceTypeApi;
+import com.thecodest.slack.holidayreminder.calamari.remote.api.EmployeesApi;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+/**
+ * Setup of Calamari module. We looking for named Strings
+ * &lt;samp&gt;calamari-username&lt;/samp&gt;
+ * and &lt;samp&gt;calamari-username&lt;/samp&gt;.
+ */
+<span class="fc" id="L16">public class CalamariModule extends AbstractModule {</span>
+
+	/**
+	 * Configuration of @{@link CalamariApi} interface.
+	 */
+	@Override
+	protected void configure() {
+<span class="fc" id="L23">		bind(CalamariApi.class).to(SimpleCalamariApi.class);</span>
+<span class="fc" id="L24">	}</span>
+
+	/**
+	 * Main {@link ApiClient} provider.
+	 *
+	 * @param username
+	 *            named String &lt;samp&gt;calamari-username&lt;/samp&gt;.
+	 * @param password
+	 *            named String &lt;samp&gt;calamari-password&lt;/samp&gt;.
+	 * @return instance that is singleton.
+	 */
+	@Provides
+	@Singleton
+	public ApiClient apiClient(@Named(&quot;calamari-username&quot;) String username,
+			@Named(&quot;calamari-password&quot;) String password) {
+<span class="fc" id="L39">		var apiClient = new ApiClient();</span>
+<span class="fc" id="L40">		apiClient.setUsername(username);</span>
+<span class="fc" id="L41">		apiClient.setPassword(password);</span>
+<span class="fc" id="L42">		return apiClient;</span>
+	}
+
+	/**
+	 * Provides {@link EmployeesApi} client instance.
+	 *
+	 * @param apiClient
+	 *            main calamari client.
+	 * @return instance that is singleton.
+	 */
+	@Provides
+	@Singleton
+	public EmployeesApi employeesApi(ApiClient apiClient) {
+<span class="fc" id="L55">		return new EmployeesApi(apiClient);</span>
+	}
+
+	/**
+	 * Provides {@link AbsenceTypeApi} client instance.
+	 *
+	 * @param apiClient
+	 *            main calamari client.
+	 * @return instance that is singleton.
+	 */
+	@Provides
+	@Singleton
+	public AbsenceTypeApi absenceTypeApi(ApiClient apiClient) {
+<span class="fc" id="L68">		return new AbsenceTypeApi(apiClient);</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

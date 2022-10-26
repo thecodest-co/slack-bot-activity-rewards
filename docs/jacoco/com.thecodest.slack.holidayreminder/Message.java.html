@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Message.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">holiday-reminder</a> &gt; <a href="index.source.html" class="el_package">com.thecodest.slack.activityrewards</a> &gt; <span class="el_source">Message.java</span></div><h1>Message.java</h1><pre class="source lang-java linenums">package com.thecodest.slack.holidayreminder;
+
+import com.thecodest.slack.holidayreminder.calamari.CalamariEmployee;
+
+/**
+ * Message send to user.
+ */
+class Message {
+
+	private final String message;
+
+	// CHECKSTYLE:OFF
+<span class="fc" id="L13">	Message() {</span>
+<span class="fc" id="L14">		this.message = &quot;&quot;&quot;</span>
+				Hi %s,
+				Famous American scientists have proven that work-life balance is damn necessary to keep you job satisfaction high. Just to name a few advantages from taking a break:
+
+				1. You have more time to fight with your family and friends :family:
+				2. You can waste entire days on useless activities, not only afternoons and evenings :hourglass:
+				3. You could spend more time on your side project that is going to trash anyway :put_litter_in_its_place:
+				4. Life and reality are more tolerable when you are well rested :zzz:
+				5. You could also travel a world and see something cool or smth :globe_with_meridians:
+
+				I have spied in Calamari that you've got plenty of days off to take, do you need any more arguments to enjoy your holiday?
+				You deserve it! &lt;https://www.youtube.com/watch?v=bVRnMrl2oj8|Chill out like a BOSS&gt; :cool-doge:
+				Peace :peace-out:
+				Cody
+				&quot;&quot;&quot;;
+<span class="fc" id="L29">	}</span>
+	// CHECKSTYLE:ON
+
+	public String getMessage(CalamariEmployee calamariEmployee) {
+<span class="fc" id="L33">		return String.format(message, calamariEmployee.name(), calamariEmployee.balanceOut());</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

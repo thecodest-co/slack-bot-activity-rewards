@@ -1,0 +1,4082 @@
+swagger: '2.0'
+info:
+  version: '1'
+  title: Calamari API
+  contact:
+    name: CHROBRUS
+    url: http://calamari.io
+    email: developers@calamari.io
+host: thecodest.calamari.io
+basePath: /api
+tags:
+  - name: Absence requests
+  - name: Absence type
+  - name: Contract types
+  - name: Current shift status
+  - name: Employees
+  - name: Holidays
+  - name: Positions
+  - name: Projects
+  - name: Shifts and breaks
+  - name: Teams
+  - name: Timesheet entries
+  - name: Working Week
+schemes:
+  - https
+paths:
+  /clockin/projects/v1/archive:
+    post:
+      tags:
+        - Projects
+      summary: Archive project type.
+      description: Archive project type.<br /><br />Expect error codes:<ol><li><strong>INVALID_PROJECT</strong>
+        - provided project id is invalid</li></ol>
+      operationId: archiveProjectType
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/ProjectOut'
+        '400':
+          description: Invalid input. Reason and description is returned in json response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are three possible reasons:
+            disabled API access, no API terminal configured od invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /clockin/projects/v1/create:
+    post:
+      tags:
+        - Projects
+      summary: Create project type.
+      description: Create project type.<br /><br />Expect error codes:<ol><li><strong>INVALID_PERSON</strong>
+        - when one of provided persons is invalid</li><li><strong>INVALID_TEAM</strong>
+        - when one of provided teams is invalid</li></ol>
+      operationId: createProjectType
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/ProjectOutWithAssignedEmployeesTeams'
+        '400':
+          description: Invalid input. Reason and description is returned in json response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are three possible reasons:
+            disabled API access, no API terminal configured od invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /clockin/projects/v1/get-projects:
+    post:
+      tags:
+        - Projects
+      summary: Get project types.
+      description: Get project types.
+      operationId: getProjects
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ProjectOut'
+        '400':
+          description: Invalid input. Reason and description is returned in json response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are three possible reasons:
+            disabled API access, no API terminal configured od invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /clockin/projects/v1/get-projects-for-person:
+    post:
+      tags:
+        - Projects
+      summary: Get project types for one person.
+      description: Get project types for one person.<br /><br />Expect error codes:<ol><li><strong>INVALID_EMPLOYEE</strong>
+        - when invalid employee id provided</li></ol>
+      operationId: getProjectForEmployee
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/PersonForProjects'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ProjectOut'
+        '400':
+          description: Invalid input. Reason and description is returned in json response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are three possible reasons:
+            disabled API access, no API terminal configured od invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /clockin/projects/v1/update:
+    post:
+      tags:
+        - Projects
+      summary: Update project type.
+      description: Update project type.<br /><br />Expect error codes:<ol><li><strong>INVALID_PERSON</strong>
+        - when one of provided persons is invalid</li><li><strong>INVALID_TEAM</strong>
+        - when one of provided teams is invalid</li></ol>
+      operationId: updateProjectType
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/ProjectOutWithAssignedEmployeesTeams'
+        '400':
+          description: Invalid input. Reason and description is returned in json response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are three possible reasons:
+            disabled API access, no API terminal configured od invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /clockin/shift/status/v1/get-current:
+    post:
+      tags:
+        - Current shift status
+      summary: Get current shift status for one person.
+      description: Get current shift status for one person.<br /><br />Expect error
+        codes:<ol><li><strong>INVALID_EMPLOYEE</strong> - when invalid employee id
+        provided</li></ol>
+      operationId: getCurrentShiftStatusForOnePerson
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/ShiftStatusRequest'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/CurrentShiftStatus'
+        '400':
+          description: Invalid input. Reason and description is returned in json response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are three possible reasons:
+            disabled API access, no API terminal configured od invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /clockin/shift/status/v1/get-current-for-all:
+    post:
+      tags:
+        - Current shift status
+      summary: Get current shift status for all employees
+      description: Get current shift status for all employees.
+      operationId: getCurrentShiftStatusForAll
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CurrentShiftStatus'
+        '400':
+          description: Invalid input. Reason and description is returned in json response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are three possible reasons:
+            disabled API access, no API terminal configured od invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /clockin/shift/status/v1/presence/report:
+    post:
+      tags:
+        - Current shift status
+      summary: Get current presence report for all employees
+      description: Get current presence report for all employees. Results are paged
+        by employees number.<br /><br />Expect error codes:<ol><li><strong>INVALID_PAGE</strong>
+        - when invalid page provided</li><li><strong>INVALID_LIMIT</strong> - when
+        invalid limit provided</li><li><strong>INVALID_DATE_FROM</strong> - when invalid
+        date provided</li><li><strong>INVALID_DATE_TO</strong> - when invalid date
+        provided</li>
+      operationId: getPresenceReport
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/GetPresenceReportRequest'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/DailyPresenceReport'
+        '400':
+          description: Invalid input. Reason and description is returned in json response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are three possible reasons:
+            disabled API access, no API terminal configured od invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /clockin/terminal/v1/break-start:
+    post:
+      tags:
+        - Shifts and breaks
+      summary: Start employee break.
+      description: Start employee break. <br /><br />Client application should send
+        request immediately when event occurs. If there is any problem with connection
+        or access to API event should be queued in clients side and then sent in order
+        of occurence.<br /><br />Before you can use this method, please:<ol><li>Configure
+        'API Terminal' in Calamari Clockin configuration panel</li><li>Make sure API
+        access is enabled</li></ol><br /><br />Expect error codes:<ol><li><strong>INVALID_EMPLOYEE</strong>
+        - when invalid employee id provided</li><li><strong>INVALID_TIME</strong>
+        - when invalid event time provided</li><li><strong>INVALID_BREAK_TYPE</strong>
+        - when invalid break type id provided</li><li><strong>API_TERMINAL_NOT_AVAILABLE</strong>
+        - no API terminal configured or the employee doesn't have access to this terminal</li></ol>
+      operationId: breakStart
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/BreakIn'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/BreakOut'
+        '400':
+          description: Invalid input. Reason and description is returned in json response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are three possible reasons:
+            disabled API access, no API terminal configured od invalid ApiKey provided'
+        '403':
+          description: No API terminal configured or the employee doesn't have access
+            to this terminal
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /clockin/terminal/v1/break-stop:
+    post:
+      tags:
+        - Shifts and breaks
+      summary: Stop employee break.
+      description: Stop employee break. <br /><br />Client application should send
+        request immediately when event occurs. If there is any problem with connection
+        or access to API event should be queued in clients side and then sent in order
+        of occurence.<br /><br />Before you can use this method, please:<ol><li>Configure
+        'API Terminal' in Calamari Clockin configuration panel</li><li>Make sure API
+        access is enabled</li></ol><br /><br />Expect error codes:<ol><li><strong>INVALID_EMPLOYEE</strong>
+        - when invalid employee id provided</li><li><strong>INVALID_TIME</strong>
+        - when invalid event time provided</li><li><strong>INVALID_BREAK_TYPE</strong>
+        - when invalid break type id provided. You should use get-break-types method
+        to find properly break type ID </li><li><strong>API_TERMINAL_NOT_AVAILABLE</strong>
+        - no API terminal configured or the employee doesn't have access to this terminal</li></ol>
+      operationId: breakStop
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/BreakIn'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/BreakOut'
+        '400':
+          description: Invalid input. Reason and description is returned in json response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are three possible reasons:
+            disabled API access, no API terminal configured od invalid ApiKey provided'
+        '403':
+          description: No API terminal configured or the employee doesn't have access
+            to this terminal
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /clockin/terminal/v1/clock-in:
+    post:
+      tags:
+        - Shifts and breaks
+      summary: Start employees shift.
+      description: Start employee shift. If the employee shift has already been started
+        via web browser, mobile app or any other terminal, the request is ignored
+        and the method returns status 200.<br /><br />Client application should send
+        request immediately when event occurs. If there is any problem with connection
+        or access to API event should be queued in clients side and then sent in order
+        of occurence.<br /><br />Before you can use this method, please:<ol><li>Configure
+        'API Terminal' in Calamari Clockin configuration panel</li><li>Make sure API
+        access is enabled</li></ol><br /><br />Expect error codes:<ol><li><strong>INVALID_EMPLOYEE</strong>
+        - when invalid employee id provided</li><li><strong>INVALID_TIME</strong>
+        - when invalid event time provided</li><li><strong>API_TERMINAL_NOT_AVAILABLE</strong>
+        - no API terminal configured or the employee doesn't have access to this terminal</li></ol>
+      operationId: clockIn
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/PunchClockIn'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/PunchOut'
+        '400':
+          description: Invalid input. Reason and description is returned in json response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are three possible reasons:
+            disabled API access, no API terminal configured od invalid ApiKey provided'
+        '403':
+          description: No API terminal configured or the employee doesn't have access
+            to this terminal
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /clockin/terminal/v1/clock-out:
+    post:
+      tags:
+        - Shifts and breaks
+      summary: Finish employees shift.
+      description: Stop employee shift. If employee shift is not started in moment
+        of request the request is ignored.<br /><br />Client application should send
+        request immediately when event occurs. If there is any problem with connection
+        or access to API event should be queued in clients side and then sent in order
+        of occurence.<br /><br />Before you can use this method, please:<ol><li>Configure
+        'API Terminal' in Calamari Clockin configuration panel</li><li>Make sure API
+        access is enabled</li></ol><br /><br />Expect error codes:<ol><li><strong>INVALID_EMPLOYEE</strong>
+        - when invalid employee id provided</li><li><strong>INVALID_TIME</strong>
+        - when invalid event time provided</li><li><strong>API_TERMINAL_NOT_AVAILABLE</strong>
+        - no API terminal configured or the employee doesn't have access to this terminal</li></ol>
+      operationId: clockOut
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/PunchClockOut'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/PunchOut'
+        '400':
+          description: Invalid input. Reason and description is returned in json response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are three possible reasons:
+            disabled API access, no API terminal configured od invalid ApiKey provided'
+        '403':
+          description: No API terminal configured or the employee doesn't have access
+            to this terminal
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /clockin/terminal/v1/get-break-types:
+    post:
+      tags:
+        - Shifts and breaks
+      summary: Get break types.
+      description: Get break types. <br /><br />
+      operationId: getBreakTypes
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/GetBreakTypeOut'
+        '400':
+          description: Invalid input. Reason and description is returned in json response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are three possible reasons:
+            disabled API access, no API terminal configured od invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /clockin/terminal/v1/get-break-types-for-person:
+    post:
+      tags:
+        - Shifts and breaks
+      summary: Get break types for one person.
+      description: Get break types for one person.<br /><br />Expect error codes:<ol><li><strong>INVALID_EMPLOYEE</strong>
+        - when invalid employee id provided</li></ol>
+      operationId: getBreakTypesForEmployee
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/PersonForBreakTypes'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/GetBreakTypeOut'
+        '400':
+          description: Invalid input. Reason and description is returned in json response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are three possible reasons:
+            disabled API access, no API terminal configured od invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /clockin/terminal/v1/punch-clock:
+    post:
+      tags:
+        - Shifts and breaks
+      summary: Start or stop employee shift
+      description: Method indicates employee go through company's doors. Starts shift
+        if it's not started or stops it otherwise.<br /><br />Client application should
+        send request immediately when event occurs. If there is any problem with connection
+        or access to API event should be queued in clients side and then sent in order
+        of occurence.<br /><br />Before you can use this method, please:<ol><li>Configure
+        'API Terminal' in Calamari Clockin configuration panel</li><li>Make sure API
+        access is enabled</li></ol><br /><br />Expect error codes:<ol><li><strong>INVALID_EMPLOYEE</strong>
+        - when invalid employee id provided</li><li><strong>INVALID_TIME</strong>
+        - when invalid event time provided</li><li><strong>API_TERMINAL_NOT_AVAILABLE</strong>
+        - no API terminal configured or the employee doesn't have access to this terminal</li></ol>
+      operationId: punch
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/PunchClockIn'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/PunchOut'
+        '400':
+          description: Invalid input. Reason and description is returned in json response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are three possible reasons:
+            disabled API access, no API terminal configured od invalid ApiKey provided'
+        '403':
+          description: No API terminal configured or the employee doesn't have access
+            to this terminal
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /clockin/timesheetentries/v1/balance:
+    post:
+      tags:
+        - Timesheet entries
+      summary: Find employees working time balances with advanced filtering by several
+        parameters.
+      description: 'Find employees working time balances in dates range. <br /><br
+        />If you provide more than one value in one filter attribute there is OR relation
+        between them.  For instance: if you put in a filter: {employees: ["john@mycompany.com",
+        "kevin@mycompany.com"]} it returns all John''s and all Kevin''s balances.<br
+        /><br />When you fill more than one attribute in filter all conditions have
+        to be fulfilled. There is AND relation between attributes. For instance: if
+        you provide in filter {contractTypes: ["Full-time"], teams: ["DevTeam"]} then
+        you receive balances of employees from Dev and Full-time<br /><br />Expect
+        error codes:<ol><li><strong>INVALID_DATE_FROM</strong> - when invalid time
+        in filter provided</li><li><strong>INVALID_DATE_TO</strong> - when invalid
+        time in filter provided</li><li><strong>INVALID_EMPLOYEE</strong> - when one
+        of provided employees is invalid</li><li><strong>INVALID_TEAM</strong> - when
+        one of provided teams is invalid</li><li><strong>INVALID_POSITION</strong>
+        - when one of provided positions is invalid</li><li><strong>INVALID_CONTRACT_TYPE</strong>
+        - when one of provided contract types is invalid</li></ol>'
+      operationId: findTimeEntries
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/FilterBalanceEntriesIn'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/BalanceEntryOut'
+        '400':
+          description: Invalid input. Reason and description are returned in json
+            response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are two possible reasons: disabled
+            API access, or invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /clockin/timesheetentries/v1/create:
+    post:
+      tags:
+        - Timesheet entries
+      summary: Add historical timesheet entry.
+      description: Add employee shift. <br /><br />Expect error codes:<ol><li><strong>INVALID_EMPLOYEE</strong>
+        - when invalid employee id provided</li><li><strong>INVALID_SHIFT_START</strong>
+        - when invalid start of work time provided</li><li><strong>INVALID_SHIFT_END</strong>
+        - when invalid finish of work time provided</li><li><strong>SHIFT_END_BEFORE_START</strong>
+        - when end of work time is before start</li><li><strong>SHIFT_TO_SHORT</strong>
+        - when shift period is shorter than one minute</li><li><strong>INVALID_BREAK_TYPE</strong>
+        - when invalid break type id provided. You should use get-break-types method
+        to find proper break type ID</li><li><strong>INVALID_BREAK_FOR_USER</strong>
+        -  when break type is not available for employee</li><li><strong>INVALID_BREAK_START</strong>
+        - when invalid start of break time provided</li><li><strong>INVALID_BREAK_END</strong>
+        - when invalid finish of break time provided</li><li><strong>BREAK_END_BEFORE_START</strong>
+        - when end of break time is before start</li><li><strong>BREAK_IS_NOT_IN_SHIFT_RANGE</strong>
+        -  when break time range goes beyond work time range</li><li><strong>BREAK_TO_SHORT</strong>
+        - when break period is shorter than one minute</li><li><strong>BREAKS_OVERLAP</strong>
+        - when one break time range overlaps another</li><li><strong>INVALID_PROJECT_TYPE</strong>
+        - when invalid project type id provided. You should use get-projects method
+        to find proper project type ID</li><li><strong>INVALID_PROJECT_FOR_USER</strong>
+        -  when project type is not available for employee. You should use get-projects-for-person
+        method to find proper project type ID</li><li><strong>INVALID_PROJECT_TIME_ENTRY_START</strong>
+        - when invalid start of project time entry provided</li><li><strong>INVALID_PROJECT_TIME_ENTRY_END</strong>
+        - when invalid finish of project time entry provided</li><li><strong>PROJECT_TIME_ENTRY_END_BEFORE_START</strong>
+        - when end of project time entry is before start</li><li><strong>PROJECT_TIME_ENTRY_IS_NOT_IN_SHIFT_RANGE</strong>
+        -  when project time entry goes beyond work time range</li><li><strong>PROJECT_TIME_ENTRY_TO_SHORT</strong>
+        - when project time entry is shorter than one minute</li><li><strong>PROJECT_TIME_ENTRIES_OVERLAP</strong>
+        - when one project time entry overlaps another</li></ol>
+      operationId: addTimeEntry
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/CreateTimesheetEntryIn'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/TimesheetEntryOut'
+        '400':
+          description: Invalid input. Reason and description are returned in json
+            response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are two possible reasons: disabled
+            API access, or invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /clockin/timesheetentries/v1/delete:
+    post:
+      tags:
+        - Timesheet entries
+      summary: Delete timesheet entry by id
+      description: Delete timesheet entry by id
+      operationId: deleteTimesheetEntryById
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/DeleteTimesheetEntryById'
+      responses:
+        '400':
+          description: Invalid input. Reason and description are returned in json
+            response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are two possible reasons: disabled
+            API access, or invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /clockin/timesheetentries/v1/find:
+    post:
+      tags:
+        - Timesheet entries
+      summary: Find timesheet entries with advanced filtering by several parameters.
+      description: 'Find timesheet entries in dates range. <br /><br />If you provide
+        more than one value in one filter attribute there is OR relation between them.  For
+        instance: if you put in a filter: {employees: ["john@mycompany.com", "kevin@mycompany.com"]}
+        it returns all John''s and all Kevin''s timesheet entries.<br /><br />When
+        you fill more than one attribute in filter all conditions have to be fulfilled.
+        There is AND relation between attributes. For instance: if you provide in
+        filter {contractTypes: ["Full-time"], teams: ["DevTeam"]} then timesheet entries
+        of employees from Dev and Full-time<br /><br />Expect error codes:<ol><li><strong>INVALID_DATE_FROM</strong>
+        - when invalid time in filter provided</li><li><strong>INVALID_DATE_TO</strong>
+        - when invalid time in filter provided</li><li><strong>INVALID_EMPLOYEE</strong>
+        - when one of provided employees is invalid</li><li><strong>INVALID_TEAM</strong>
+        - when one of provided teams is invalid</li><li><strong>INVALID_POSITION</strong>
+        - when one of provided positions is invalid</li><li><strong>INVALID_CONTRACT_TYPE</strong>
+        - when one of provided contract types is invalid</li></ol>'
+      operationId: findTimeEntries
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/FilterTimesheetEntriesIn'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TimesheetEntryOut'
+        '400':
+          description: Invalid input. Reason and description are returned in json
+            response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are two possible reasons: disabled
+            API access, or invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /clockin/timesheetentries/v1/get-projects:
+    post:
+      tags:
+        - Timesheet entries
+      summary: Get project types.
+      description: Get project types.
+      operationId: getProjectTypes
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ProjectOut'
+        '400':
+          description: Invalid input. Reason and description is returned in json response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are three possible reasons:
+            disabled API access, no API terminal configured od invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /clockin/timesheetentries/v1/get-projects-for-person:
+    post:
+      tags:
+        - Timesheet entries
+      summary: Get project types for one person.
+      description: Get project types for one person.<br /><br />Expect error codes:<ol><li><strong>INVALID_EMPLOYEE</strong>
+        - when invalid employee id provided</li></ol>
+      operationId: getProjectTypesForEmployee
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/PersonForProjects'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ProjectOut'
+        '400':
+          description: Invalid input. Reason and description is returned in json response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are three possible reasons:
+            disabled API access, no API terminal configured od invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /clockin/timesheetentries/v1/update:
+    post:
+      tags:
+        - Timesheet entries
+      summary: Update historical timesheet entry.
+      description: Update employee shift. <br /><br />Expect error codes:<ol><li><strong>INVALID_EMPLOYEE</strong>
+        - when invalid employee id provided</li><li><strong>INVALID_SHIFT_START</strong>
+        - when invalid start of work time provided</li><li><strong>INVALID_SHIFT_END</strong>
+        - when invalid finish of work time provided</li><li><strong>SHIFT_END_BEFORE_START</strong>
+        - when end of work time is before start</li><li><strong>SHIFT_TO_SHORT</strong>
+        - when shift period is shorter than one minute</li><li><strong>INVALID_BREAK_TYPE</strong>
+        - when invalid break type id provided. You should use get-break-types method
+        to find proper break type ID</li><li><strong>INVALID_BREAK_FOR_USER</strong>
+        -  when break type is not available for employee</li><li><strong>INVALID_BREAK_START</strong>
+        - when invalid start of break time provided</li><li><strong>INVALID_BREAK_END</strong>
+        - when invalid finish of break time provided</li><li><strong>BREAK_END_BEFORE_START</strong>
+        - when end of break time is before start</li><li><strong>BREAK_IS_NOT_IN_SHIFT_RANGE</strong>
+        -  when break time range goes beyond work time range</li><li><strong>BREAK_TO_SHORT</strong>
+        - when break period is shorter than one minute</li><li><strong>BREAKS_OVERLAP</strong>
+        - when one break time range overlaps another</li><li><strong>INVALID_PROJECT_TYPE</strong>
+        - when invalid project type id provided. You should use get-projects method
+        to find proper project type ID</li><li><strong>INVALID_PROJECT_FOR_USER</strong>
+        -  when project type is not available for employee. You should use get-projects-for-person
+        method to find proper project type ID</li><li><strong>INVALID_PROJECT_TIME_ENTRY_START</strong>
+        - when invalid start of project time entry provided</li><li><strong>INVALID_PROJECT_TIME_ENTRY_END</strong>
+        - when invalid finish of project time entry provided</li><li><strong>PROJECT_TIME_ENTRY_END_BEFORE_START</strong>
+        - when end of project time entry is before start</li><li><strong>PROJECT_TIME_ENTRY_IS_NOT_IN_SHIFT_RANGE</strong>
+        -  when project time entry goes beyond work time range</li><li><strong>PROJECT_TIME_ENTRY_TO_SHORT</strong>
+        - when project time entry is shorter than one minute</li><li><strong>PROJECT_TIME_ENTRIES_OVERLAP</strong>
+        - when one project time entry overlaps another</li></ol>
+      operationId: updateTimeEntry
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/EditTimesheetEntryIn'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/TimesheetEntryOut'
+        '400':
+          description: Invalid input. Reason and description are returned in json
+            response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are two possible reasons: disabled
+            API access, or invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /contract-types/v1/all:
+    post:
+      tags:
+        - Contract types
+      summary: Get all contract types.
+      description: Get all contract types.
+      operationId: getTeams
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ContractTypeOut'
+        '400':
+          description: Invalid input. Reason and description are returned in json
+            response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are two possible reasons: disabled
+            API access, or invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /employees/v1/archive:
+    post:
+      tags:
+        - Employees
+      summary: Mark employee as archived.
+      description: Mark employee as archived.
+      operationId: markEmployeeAsArchived
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/PublicArchiveEmployeeIn'
+      responses:
+        '400':
+          description: Invalid input. Reason and description are returned in json
+            response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are two possible reasons: disabled
+            API access, or invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /employees/v1/create:
+    post:
+      tags:
+        - Employees
+      summary: Create employee.
+      description: Create employee.<br /><br />Expect error codes:<ol><li><strong>INVALID_FIRST_NAME</strong>
+        - when first name is not provided or is invalid</li><li><strong>INVALID_LAST_NAME</strong>
+        - when last name is not provided or is invalid</li><li><strong>INVALID_EMAIL</strong>
+        - when email name is not provided or is invalid</li><li><strong>INVALID_WORKING_WEEK</strong>
+        - when working week is not provided or is invalid</li><li><strong>INVALID_ACCEPTANCE_FLOW</strong>
+        - when acceptance flow is not provided or is invalid</li><li><strong>INVALID_HOLIDAYS_CALENDAR</strong>
+        - when holidays calendar is not provided or is invalid</li><li><strong>INVALID_SEX</strong>
+        - when sex is not provided or is invalid</li><li><strong>INVALID_MARTIAL_STATUS</strong>
+        - when martial status is not provided or is invalid</li><li><strong>INVALID_WORKING_WEEK</strong>
+        - when working week is not provided or is invalid</li><li><strong>INVALID_TEAM</strong>
+        - when one of provided teams is invalid</li><li><strong>INVALID_POSITION</strong>
+        - when one of provided positions is invalid</li><li><strong>INVALID_CONTRACT_TYPE</strong>
+        - when contract type is invalid</li><li><strong>INVALID_DIRECT_MANAGER</strong>
+        - when invalid direct manager id is provided</li></ol>
+      operationId: createEmployee
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/PublicCreateEmployeeIn'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/CreateEmployeeOut'
+        '400':
+          description: Invalid input. Reason and description are returned in json
+            response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are two possible reasons: disabled
+            API access, or invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /employees/v1/edit:
+    post:
+      tags:
+        - Employees
+      summary: Edit employee.
+      description: Edit employee.<br /><br />Expect error codes:<ol><li><strong>INVALID_EMPLOYEE</strong>
+        - when invalid employee id provided</li><li><strong>INVALID_FIRST_NAME</strong>
+        - when first name is not provided or is invalid</li><li><strong>INVALID_LAST_NAME</strong>
+        - when last name is not provided or is invalid</li><li><strong>INVALID_EMAIL</strong>
+        - when email is not provided or is invalid</li><li><strong>INVALID_WORKING_WEEK</strong>
+        - when provided working week is invalid</li><li><strong>INVALID_ACCEPTANCE_FLOW</strong>
+        - when provided acceptance flow is is invalid</li><li><strong>INVALID_HOLIDAYS_CALENDAR</strong>
+        - when provided holidays calendar is invalid</li><li><strong>INVALID_SEX</strong>
+        - when provided sex is invalid</li><li><strong>INVALID_MARITAL_STATUS</strong>
+        - when provided marital status is invalid</li><li><strong>INVALID_WORKING_WEEK</strong>
+        - when provided working week is invalid</li><li><strong>INVALID_TEAM</strong>
+        - when one of provided teams is invalid</li><li><strong>INVALID_POSITION</strong>
+        - when one of provided positions is invalid</li><li><strong>INVALID_CONTRACT_TYPE</strong>
+        - when contract type is invalid</li><li><strong>INVALID_PERSONAL_EMAIL</strong>
+        - when personal email is invalid</li><li><strong>INVALID_DIRECT_MANAGER</strong>
+        - when invalid direct manager is provided</li></ol>
+      operationId: EditEmployee
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/PublicEditEmployeeIn'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/CreateEmployeeOut'
+        '400':
+          description: Invalid input. Reason and description are returned in json
+            response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are two possible reasons: disabled
+            API access, or invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /employees/v1/invite:
+    post:
+      tags:
+        - Employees
+      summary: Invite employee.
+      description: Invite employee
+      operationId: inviteEmployee
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/InvitationEmployeeIn'
+      responses:
+        '400':
+          description: Invalid input. Reason and description are returned in json
+            response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are two possible reasons: disabled
+            API access, or invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /employees/v1/list:
+    post:
+      tags:
+        - Employees
+      summary: Get all employees.
+      description: Get all employees.
+      operationId: getEmployees
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/PublicEmployeesIn'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/EmployeesOut'
+        '400':
+          description: Invalid input. Reason and description are returned in json
+            response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are two possible reasons: disabled
+            API access, or invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /employees/v1/search:
+    post:
+      tags:
+        - Employees
+      summary: Get all employees.
+      description: Get all employees.
+      operationId: searchEmployees
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/PublicSearchEmployeesIn'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/EmployeesOut'
+        '400':
+          description: Invalid input. Reason and description are returned in json
+            response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are two possible reasons: disabled
+            API access, or invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /holiday/v1/find:
+    post:
+      tags:
+        - Holidays
+      summary: Find public holidays for employee in dates range.
+      description: Find public holidays for employee in dates range.<br /><br />Expect
+        error codes:<ol><li><strong>INVALID_EMPLOYEE</strong> - when invalid employee
+        id provided</li><li><strong>INVALID_DATE_FROM</strong> - when invalid time
+        in filter provided</li><li><strong>INVALID_DATE_TO</strong> - when invalid
+        time in filter provided</li></ol>
+      operationId: find
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/FindHolidaysInRangeIn'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/HolidayOut'
+        '400':
+          description: Invalid input. Reason and description is returned in json response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are three possible reasons:
+            disabled API access, no API terminal configured od invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /leave/request/v1/create:
+    post:
+      tags:
+        - Absence requests
+      summary: Create an absence request.
+      description: Create an absence request.Expect error codes:<ol><li><strong>INVALID_ABSENCE_TIME</strong>
+        - when invalid absence time provided</li><li><strong>INVALID_ABSENCE_ALLOWANCE</strong>
+        - when employee absence allowance is not enough</li><li><strong>INVALID_HIRE_DATE</strong>
+        - when employee hire date is invalid</li><li><strong>REQUESTING_RULES_VIOLATED</strong>
+        - when requesting rules violated</li><li><strong>INVALID_APPROVAL_FLOW</strong>
+        - when approval flow is not configured</li><li><strong>INVALID_ABSENCE_TYPE</strong>
+        - when invalid absence type provided</li><li><strong>INVALID_REASON</strong>
+        - when invalid reason provided</li><li><strong>INVALID_SUBSTITUTE</strong>
+        - when invalid substitute provided</li><li><strong>INVALID_COMMENT</strong>
+        - when invalid comment provided</li><li><strong>INVALID_TIME_PART</strong>
+        - when invalid time part provided</li></ol>
+      operationId: createAbsenceRequest
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/CreateAbsenceRequestForParticularEmployee'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/AbsenceRequestId'
+        '400':
+          description: Invalid input. Reason and description is returned in json response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are three possible reasons:
+            disabled API access, no API terminal configured or invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /leave/request/v1/create-comment:
+    post:
+      tags:
+        - Absence requests
+      summary: Create comment for chosen request.
+      description: Create comment for chosen request.<br /><br />Expect error codes:<ol><li><strong>INVALID_EMPLOYEE</strong>
+        - when invalid employee id provided</li><li><strong>INVALID_CONTENT</strong>
+        - when invalid content provided</li><li><strong>INVALID_REQUEST</strong> -
+        when invalid absence request provided</li></ol>
+      operationId: createComment
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/Comment'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CommentOut'
+        '400':
+          description: Invalid input. Reason and description is returned in json response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are three possible reasons:
+            disabled API access, no API terminal configured or invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /leave/request/v1/find:
+    post:
+      tags:
+        - Absence requests
+      summary: Find absence requests of employee in dates range.
+      description: Find absence requests of employee in dates range.<br /><br />Expect
+        error codes:<ol><li><strong>INVALID_EMPLOYEE</strong> - when invalid employee
+        id provided</li><li><strong>INVALID_DATE_FROM</strong> - when invalid date
+        from in filter provided</li><li><strong>INVALID_DATE_TO</strong> - when invalid
+        date to in filter provided</li></ol>
+      operationId: find
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/FindAbsencesInRangeIn'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/AbsenceDto'
+        '400':
+          description: Invalid input. Reason and description is returned in json response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are three possible reasons:
+            disabled API access, no API terminal configured or invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /leave/request/v1/find-advanced:
+    post:
+      tags:
+        - Absence requests
+      summary: Find absence requests with advanced filtering by several parameters.
+      description: 'Find absence requests in dates range. <br /><br />If you provide
+        more than one value in one filter attribute there is OR relation between them.  For
+        instance: if you put in a filter: {employees: ["john@mycompany.com", "kevin@mycompany.com"]}
+        it returns all John''s and all Kevin''s requests.<br /><br />When you fill
+        more than one attribute in filter all conditions have to be fulfilled. There
+        is AND relation between attributes. For instance: if you provide in filter
+        {absenceTypes: ["PTO"], teams: ["DevTeam"]} then will be returned PTO requests
+        of employees who are in team DevTeam.<br /><br />Expect error codes:<ol><li><strong>INVALID_DATE_FROM</strong>
+        - when invalid time in filter provided</li><li><strong>INVALID_DATE_TO</strong>
+        - when invalid time in filter provided</li><li><strong>INVALID_EMPLOYEE</strong>
+        - when one of provided employees is invalid</li><li><strong>INVALID_ABSENCE_TYPE</strong>
+        - when one of provided absence types is invalid</li><li><strong>INVALID_TEAM</strong>
+        - when one of provided teams is invalid</li><li><strong>INVALID_POSITION</strong>
+        - when one of provided positions is invalid</li><li><strong>INVALID_CONTRACT_TYPE</strong>
+        - when one of provided contract types is invalid</li><li><strong>INVALID_CREATE_DATE_FROM</strong>
+        - when invalid time in filter provided</li><li><strong>INVALID_CREATE_DATE_TO</strong>
+        - when invalid time in filter provided</li><li><strong>INVALID_CREATE_UPDATE_FROM</strong>
+        - when invalid time in filter provided</li><li><strong>INVALID_CREATE_UPDATE_TO</strong>
+        - when invalid time in filter provided</li></ol>'
+      operationId: findExtended
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/FindAbsencesAdvancedIn'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/AbsenceDtoExtended'
+        '400':
+          description: Invalid input. Reason and description is returned in json response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are three possible reasons:
+            disabled API access, no API terminal configured od invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /leave/request/v1/remove:
+    post:
+      tags:
+        - Absence requests
+      summary: Remove chosen absence request.
+      description: Remove chosen absence request.<br /><br />Expect error codes:<ol><li><strong>INVALID_REQUEST</strong>
+        - when invalid absence request provided</li></ol>
+      operationId: removeRequest
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/AbsenceRequestId'
+      responses:
+        '400':
+          description: Invalid input. Reason and description is returned in json response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are three possible reasons:
+            disabled API access, no API terminal configured or invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /leave/v1/entitlement-balance/create:
+    post:
+      tags:
+        - Absence type
+      summary: Create entitlement balance.
+      description: Create entitlement balance.<br/><br/>The method allows you to add
+        the entitlement balance of a selected absence type on a selected day.<br ><br
+        />Expect error codes:<ol><li><strong>INVALID_AMOUNT</strong> - when invalid
+        amount provided</li><li><strong>INVALID_AS_OF_DATE</strong> - when invalid
+        date provided</li><li><strong>INVALID_ABSENCE_TYPE</strong> - when invalid
+        absence type provided</li><li><strong>INVALID_EMPLOYEE</strong> - when invalid
+        balance owner provided</li><li><strong>INVALID_COMMENT</strong> - when invalid
+        comment provided</li></ol>
+      operationId: manualCreateEntitlementBalance
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/CreateBalanceIn'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/ModifyBalanceOut'
+        '400':
+          description: Invalid input. Reason and description are returned in json
+            response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are two possible reasons: disabled
+            API access, or invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /leave/v1/entitlement-balance/get:
+    post:
+      tags:
+        - Absence type
+      summary: Get entitlement balance.
+      description: Get entitlement balance.<br/><br/>The method allows you to get
+        the entitlement balance for selected employee and absence type on a selected
+        day.<br ><br />Expect error codes:<ol><li><strong>INVALID_ABSENCE_TYPE</strong>
+        - when invalid absence type provided</li><li><strong>INVALID_EMPLOYEE</strong>
+        - when invalid balance owner provided</li><li><strong>INVALID_DATE</strong>
+        - when invalid date provided</li></ol>
+      operationId: getEntitlementBalance
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/GetBalanceOfEmployeeAndAbsenceType'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/BalanceOut'
+        '400':
+          description: Invalid input. Reason and description are returned in json
+            response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are two possible reasons: disabled
+            API access, or invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /leave/v1/entitlement-balance/get-advanced:
+    post:
+      tags:
+        - Absence type
+      summary: Get entitlement balance with advanced filtering by several parameters.
+      description: Get entitlement balance.<br/><br/>The method allows you to get
+        the entitlement balance for selected employees and absence types on a selected
+        day.<br ><br />Expect error codes:<ol><li><strong>INVALID_ABSENCE_TYPE</strong>
+        - when invalid absence type provided</li><li><strong>INVALID_EMPLOYEE</strong>
+        - when invalid balance owner provided</li><li><strong>INVALID_TEAM</strong>
+        - when invalid team provided</li><li><strong>INVALID_DATE</strong> - when
+        invalid date provided</li></ol>
+      operationId: getEntitlementBalances
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/GetEmployeesBalancesIn'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/EmployeeBalanceOut'
+        '400':
+          description: Invalid input. Reason and description are returned in json
+            response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are two possible reasons: disabled
+            API access, or invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /leave/v1/get-absence-types:
+    post:
+      tags:
+        - Absence type
+      summary: Get absence types with duration units.
+      description: Get absence types with duration units. <br/><br/>
+      operationId: getAbsenceTypes
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/GetAbsenceTypeOut'
+        '400':
+          description: Invalid input. Reason and description are returned in json
+            response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are two possible reasons: disabled
+            API access, or invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /positions/v1/all:
+    post:
+      tags:
+        - Positions
+      summary: Get all positions.
+      description: Get all positions.
+      operationId: getPositions
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/PositionDto'
+        '401':
+          description: 'Authentication failure. There are two possible reasons: disabled
+            API access, or invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /positions/v1/create:
+    post:
+      tags:
+        - Positions
+      summary: Create a position.
+      description: Create a position.
+      operationId: createPosition
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/CreatePositionIn'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/CreatePositionOut'
+        '400':
+          description: Invalid input. Reason and description are returned in json
+            response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are two possible reasons: disabled
+            API access, or invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /teams/v1/all:
+    post:
+      tags:
+        - Teams
+      summary: Get all teams.
+      description: Get all teams.
+      operationId: getTeams
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TeamOut'
+        '400':
+          description: Invalid input. Reason and description are returned in json
+            response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are two possible reasons: disabled
+            API access, or invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /teams/v1/create:
+    post:
+      tags:
+        - Teams
+      summary: Create a team.
+      description: Create a team.
+      operationId: createTeam
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/CreateTeamIn'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/CreateTeamOut'
+        '400':
+          description: Invalid input. Reason and description are returned in json
+            response.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: 'Authentication failure. There are two possible reasons: disabled
+            API access, or invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+  /working-week/v1/all:
+    post:
+      tags:
+        - Working Week
+      summary: Get all working weeks.
+      description: Get all working weeks.
+      operationId: getWorkingWeeks
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/WorkingWeekOut'
+        '401':
+          description: 'Authentication failure. There are two possible reasons: disabled
+            API access, or invalid ApiKey provided'
+        '429':
+          description: Too many requests per second or quota exceeded
+      security:
+        - basicAuth: [ ]
+        - basicAuth: [ ]
+securityDefinitions:
+  basicAuth:
+    type: basic
+definitions:
+  AbsenceDto:
+    type: object
+    required:
+      - absenceCategory
+      - absenceTypeId
+      - absenceTypeName
+      - amountFirstDay
+      - amountLastDay
+      - created
+      - endTime
+      - entitlementAmount
+      - entitlementAmountUnit
+      - from
+      - fullDayRequest
+      - id
+      - reason
+      - startTime
+      - status
+      - timeZone
+      - to
+      - updated
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: Absence request ID
+      from:
+        type: string
+        format: date
+        example: '2017-02-20'
+        description: Absence start date in ISO format
+      to:
+        type: string
+        format: date
+        example: '2017-02-25'
+        description: Absence finish date in ISO format
+      absenceTypeName:
+        type: string
+        example: Annual leave
+        description: Absence type name
+      absenceTypeId:
+        type: integer
+        format: int64
+        description: Absence type ID
+      absenceCategory:
+        type: string
+        description: Absence category. TIMEOFF - regular time off. WORK - when employee
+          is working but is not in office (eg. 'Remote working day')
+        enum:
+          - TIMEOFF
+          - WORK
+      status:
+        type: string
+        description: Absence request status
+        enum:
+          - PENDING
+          - PENDING_CANCELLATION
+          - REJECTED
+          - ACCEPTED
+          - CANCELED
+          - REVOKED
+      entitlementAmount:
+        type: number
+        format: float
+        description: Entitlement amount
+      reason:
+        type: string
+        description: Reason for absence
+      amountFirstDay:
+        type: number
+        format: float
+        description: First day amount
+      amountLastDay:
+        type: number
+        format: float
+        description: Last day amount
+      entitlementAmountUnit:
+        type: string
+        description: 'Entitlement amount unit '
+        enum:
+          - DAYS
+          - HOURS
+      created:
+        type: string
+        format: date-time
+        example: 2018-06-30T10:30:00+0200
+        description: Date and time of absence request creation
+      updated:
+        type: string
+        format: date-time
+        example: 2018-06-30T10:30:00+0200
+        description: Date and time of absence request latest update
+      fullDayRequest:
+        type: boolean
+        description: Has the absence been requested for the whole day?
+      startTime:
+        example: '2018-06-30T09:00:00.000'
+        description: Local start date and start time of absence
+        $ref: '#/definitions/LocalDateTime'
+      endTime:
+        example: '2018-06-30T13:00:00.000'
+        description: Local end date and end time of absence
+        $ref: '#/definitions/LocalDateTime'
+      timeZone:
+        example: Europe/Warsaw
+        description: Absence reporter time zone
+        $ref: '#/definitions/DateTimeZone'
+  AbsenceDtoExtended:
+    type: object
+    required:
+      - absenceCategory
+      - absenceTypeId
+      - absenceTypeName
+      - amountFirstDay
+      - amountLastDay
+      - created
+      - endTime
+      - entitlementAmount
+      - entitlementAmountUnit
+      - from
+      - fullDayRequest
+      - id
+      - reason
+      - startTime
+      - status
+      - timeZone
+      - to
+      - updated
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: Absence request ID
+      from:
+        type: string
+        format: date
+        example: '2017-02-20'
+        description: Absence start date in ISO format
+      to:
+        type: string
+        format: date
+        example: '2017-02-25'
+        description: Absence finish date in ISO format
+      absenceTypeName:
+        type: string
+        example: Annual leave
+        description: Absence type name
+      absenceTypeId:
+        type: integer
+        format: int64
+        description: Absence type ID
+      absenceCategory:
+        type: string
+        description: Absence category. TIMEOFF - regular time off. WORK - when employee
+          is working but is not in office (eg. 'Remote working day')
+        enum:
+          - TIMEOFF
+          - WORK
+      status:
+        type: string
+        description: Absence request status
+        enum:
+          - PENDING
+          - PENDING_CANCELLATION
+          - REJECTED
+          - ACCEPTED
+          - CANCELED
+          - REVOKED
+      entitlementAmount:
+        type: number
+        format: float
+        description: Entitlement amount
+      reason:
+        type: string
+        description: Reason for absence
+      amountFirstDay:
+        type: number
+        format: float
+        description: First day amount
+      amountLastDay:
+        type: number
+        format: float
+        description: Last day amount
+      entitlementAmountUnit:
+        type: string
+        description: 'Entitlement amount unit '
+        enum:
+          - DAYS
+          - HOURS
+      created:
+        type: string
+        format: date-time
+        example: 2018-06-30T10:30:00+0200
+        description: Date and time of absence request creation
+      updated:
+        type: string
+        format: date-time
+        example: 2018-06-30T10:30:00+0200
+        description: Date and time of absence request latest update
+      fullDayRequest:
+        type: boolean
+        description: Has the absence been requested for the whole day?
+      startTime:
+        example: '2018-06-30T09:00:00.000'
+        description: Local start date and start time of absence
+        $ref: '#/definitions/LocalDateTime'
+      endTime:
+        example: '2018-06-30T13:00:00.000'
+        description: Local end date and end time of absence
+        $ref: '#/definitions/LocalDateTime'
+      timeZone:
+        example: Europe/Warsaw
+        description: Absence reporter time zone
+        $ref: '#/definitions/DateTimeZone'
+      employeeEmail:
+        type: string
+        example: john.white@mycompany.com
+        description: Employee email
+      substituteEmail:
+        type: string
+        example: john.black@mycompany.com
+        description: Substitute email. Has null value if employee does not have substitute
+  AbsenceRequestId:
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: Absence request ID
+  BalanceEntryOut:
+    type: object
+    required:
+      - balance
+      - person
+    properties:
+      person:
+        description: Employee
+        $ref: '#/definitions/EmployeeSimpleOut'
+      balance:
+        type: integer
+        format: int64
+        example: -3600
+        description: Working time balance in seconds
+  BalanceOut:
+    type: object
+    required:
+      - amount
+      - unit
+      - unlimited
+    properties:
+      unit:
+        type: string
+        description: Duration unit
+        enum:
+          - '[HOURS'
+          - DAYS]
+      unlimited:
+        type: boolean
+        description: Is entitlement balance unlimited?
+      amount:
+        type: integer
+        format: int32
+        description: Entitlement balance amount
+  BreakDto:
+    type: object
+    properties:
+      from:
+        type: string
+        format: date-time
+        example: 2019-09-16T11:34:23+0000
+        description: Date and time when break was started.
+      to:
+        type: string
+        format: date-time
+        example: 2019-09-16T11:15:55+0000
+        description: Date and time when break was finished. Has null value if break
+          was not finished
+      duration:
+        type: integer
+        format: int64
+        example: 28800
+        description: Duration of a break in seconds. Has null value if break was not
+          finished.
+      breakType:
+        description: Break type.
+        $ref: '#/definitions/BreakTypeOut'
+  BreakDtoIn:
+    type: object
+    required:
+      - breakEnd
+      - breakStart
+      - breakType
+    properties:
+      breakType:
+        type: integer
+        format: int64
+        example: 1
+        description: ID break type
+      breakStart:
+        example: '2020-03-15T09:30:00'
+        description: Date and time of break start in ISO format
+        $ref: '#/definitions/LocalDateTime'
+      breakEnd:
+        example: '2020-03-15T10:30:00'
+        description: Date and time of break end in ISO format
+        $ref: '#/definitions/LocalDateTime'
+    description: Breaks
+  BreakIn:
+    type: object
+    required:
+      - breakType
+      - person
+      - time
+    properties:
+      person:
+        type: string
+        example: john.white@mycompany.com
+        description: Employee e-mail or login
+      time:
+        example: '2015-11-10T08:30:00'
+        description: Date and time of event occurence in ISO format.
+        $ref: '#/definitions/LocalDateTime'
+      breakType:
+        type: integer
+        format: int64
+        example: 1
+        description: ID break type
+    description: Break method payload.
+  BreakOut:
+    type: object
+    required:
+      - breakStatus
+      - person
+    properties:
+      person:
+        description: Employee description
+        $ref: '#/definitions/Person'
+      breakStatus:
+        type: string
+        description: Employee break status after request
+        enum:
+          - STARTED
+          - FINISHED
+  BreakTypeOut:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: Break id
+      name:
+        type: string
+        example: Primary break
+        description: Break name
+  Chronology:
+    type: object
+    properties:
+      zone:
+        $ref: '#/definitions/DateTimeZone'
+  Comment:
+    type: object
+    required:
+      - absenceRequestId
+      - content
+      - creator
+    properties:
+      creator:
+        type: string
+        example: john.white@mycompany.com
+        description: Employee identifier. You can use e-mail or external identifier
+          in format (externalNumber:ABC123)
+      content:
+        type: string
+        example: Home office
+        description: Comment content
+      absenceRequestId:
+        type: integer
+        format: int64
+        example: 12
+        description: Absence request id
+    description: Absence request comment with content and creator
+  CommentOut:
+    type: object
+    required:
+      - absenceRequestId
+      - commentator
+      - content
+    properties:
+      commentator:
+        description: Commentator
+        $ref: '#/definitions/EmployeeSimpleOut'
+      content:
+        type: string
+        description: Comment content
+      absenceRequestId:
+        type: integer
+        format: int64
+        description: Absence request ID
+  ContractTypeOut:
+    type: object
+    required:
+      - id
+      - name
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: Contract type ID
+      name:
+        type: string
+        example: Contract name
+        description: Contract type name
+  CreateAbsenceRequestForParticularEmployee:
+    type: object
+    required:
+      - absenceTypeId
+      - employee
+      - fromPart
+      - toPart
+    properties:
+      employee:
+        type: string
+        example: john.white@mycompany.com
+        description: Employee e-mail or login. Absence request will be created for
+          the chosen employee. Chosen employee will be also a creator of request.
+      fromPart:
+        type: string
+        example: MORNING
+        description: Time part value for absence start. Allowed values are based on
+          minimal duration of absence request in absence type configuration.
+        enum:
+          - MORNING
+          - AFTERNOON
+          - END_OF_DAY and hour based(HH:mm)
+      toPart:
+        type: string
+        example: END_OF_DAY
+        description: Time part value for absence end. Allowed values are based on
+          minimal duration of absence request in absence type configuration.
+        enum:
+          - MORNING
+          - AFTERNOON
+          - END_OF_DAY and hour based(HH:mm)
+      absenceTypeId:
+        type: string
+        example: PTO
+        description: Absence type Id
+      reason:
+        type: string
+        example: Home office
+        description: Reason content
+        minLength: 0
+        maxLength: 1024
+      substitute:
+        type: string
+        example: john.white@mycompany.com
+        description: Employee e-mail or login
+      comment:
+        type: string
+        example: Home office
+        description: Comment content
+        minLength: 0
+        maxLength: 1024
+      dateFrom:
+        type: string
+        format: date
+      dateTo:
+        type: string
+        format: date
+  CreateBalanceIn:
+    type: object
+    required:
+      - absenceType
+      - amount
+      - asOfDate
+    properties:
+      amount:
+        type: string
+        example: '1.5'
+        description: Entitlement amount with precision 3
+      asOfDate:
+        type: string
+        format: date
+        example: '2018-09-25'
+        description: Date in ISO format
+      absenceType:
+        type: integer
+        format: int64
+        description: Absence type Id
+      comment:
+        type: string
+        example: Example comment
+        description: Optional comment
+      balanceOwner:
+        type: string
+    description: Create entitlement balance.
+  CreateEmployeeOut:
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: Id of create employee
+  CreatePositionIn:
+    type: object
+    required:
+      - members
+      - positionName
+    properties:
+      positionName:
+        type: string
+        example: Manager
+        description: Position name.
+        minLength: 1
+        maxLength: 2147483647
+      members:
+        type: array
+        description: Ids of employees in the position.
+        items:
+          type: integer
+          format: int64
+  CreatePositionOut:
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        type: integer
+        format: int64
+        example: 1
+        description: Id of the created position.
+  CreateTeamIn:
+    type: object
+    required:
+      - managers
+      - members
+      - name
+    properties:
+      name:
+        type: string
+        example: Marketing
+        description: Team name.
+        minLength: 1
+        maxLength: 2147483647
+      members:
+        type: array
+        description: Identifiers of team members.
+        items:
+          type: integer
+          format: int64
+      managers:
+        type: array
+        description: Identifiers of team managers.
+        items:
+          type: integer
+          format: int64
+  CreateTeamOut:
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        type: integer
+        format: int64
+        example: 1
+        description: Id of the created team.
+  CreateTimesheetEntryIn:
+    type: object
+    required:
+      - person
+      - shiftEnd
+      - shiftStart
+    properties:
+      person:
+        type: string
+        example: john.white@mycompany.com
+        description: Employee identifier. You can use e-mail or external identifier
+          in format (externalNumber:ABC123)
+      shiftStart:
+        example: '2020-03-15T08:30:00'
+        description: Date and time of shift start in ISO format
+        $ref: '#/definitions/LocalDateTime'
+      shiftEnd:
+        example: '2020-03-15T16:30:00'
+        description: Date and time of shift end in ISO format
+        $ref: '#/definitions/LocalDateTime'
+      breaks:
+        type: array
+        description: List of breaks.
+        items:
+          $ref: '#/definitions/BreakDtoIn'
+      projects:
+        type: array
+        description: List of projects.
+        items:
+          $ref: '#/definitions/ProjectDtoIn'
+    description: Creating historical shift
+  CurrentShiftStatus:
+    type: object
+    required:
+      - person
+      - status
+    properties:
+      person:
+        description: Employee
+        $ref: '#/definitions/EmployeeSimpleOut'
+      status:
+        type: string
+        description: Current shift status.
+        enum:
+          - STARTED
+          - STOPPED
+          - BREAK
+  DailyPresenceReport:
+    type: object
+    required:
+      - dailyPresenceReport
+      - date
+    properties:
+      date:
+        type: string
+        example: '2021-01-01'
+        description: Date of the daily report
+      dailyPresenceReport:
+        type: array
+        description: Daily employees presence reports
+        items:
+          $ref: '#/definitions/EmployeePresenceStatus'
+  DateTimeField:
+    type: object
+    properties:
+      name:
+        type: string
+      type:
+        $ref: '#/definitions/DateTimeFieldType'
+      supported:
+        type: boolean
+      lenient:
+        type: boolean
+      minimumValue:
+        type: integer
+        format: int32
+      maximumValue:
+        type: integer
+        format: int32
+      durationField:
+        $ref: '#/definitions/DurationField'
+      rangeDurationField:
+        $ref: '#/definitions/DurationField'
+      leapDurationField:
+        $ref: '#/definitions/DurationField'
+  DateTimeFieldType:
+    type: object
+    properties:
+      name:
+        type: string
+      durationType:
+        $ref: '#/definitions/DurationFieldType'
+      rangeDurationType:
+        $ref: '#/definitions/DurationFieldType'
+  DateTimeZone:
+    type: object
+    properties:
+      id:
+        type: string
+      fixed:
+        type: boolean
+  DeleteTimesheetEntryById:
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        type: integer
+        format: int64
+    description: Deleting timesheet entry by id
+  DurationField:
+    type: object
+    properties:
+      name:
+        type: string
+      type:
+        $ref: '#/definitions/DurationFieldType'
+      supported:
+        type: boolean
+      precise:
+        type: boolean
+      unitMillis:
+        type: integer
+        format: int64
+  DurationFieldType:
+    type: object
+    properties:
+      name:
+        type: string
+  EditTimesheetEntryIn:
+    type: object
+    required:
+      - id
+      - person
+      - shiftEnd
+      - shiftStart
+    properties:
+      person:
+        type: string
+        example: john.white@mycompany.com
+        description: Employee identifier. You can use e-mail or external identifier
+          in format (externalNumber:ABC123)
+      shiftStart:
+        example: '2020-03-15T08:30:00'
+        description: Date and time of shift start in ISO format
+        $ref: '#/definitions/LocalDateTime'
+      shiftEnd:
+        example: '2020-03-15T16:30:00'
+        description: Date and time of shift end in ISO format
+        $ref: '#/definitions/LocalDateTime'
+      breaks:
+        type: array
+        description: List of breaks.
+        items:
+          $ref: '#/definitions/BreakDtoIn'
+      projects:
+        type: array
+        description: List of projects.
+        items:
+          $ref: '#/definitions/ProjectDtoIn'
+      id:
+        type: integer
+        format: int64
+    description: Updating historical shift
+  EmployeeBalanceOut:
+    type: object
+  EmployeeFullOut:
+    type: object
+    required:
+      - addressCity
+      - addressCountry
+      - addressNumber
+      - addressPostalCode
+      - addressProvinceState
+      - addressStreet
+      - admin
+      - approvalFlow
+      - archived
+      - birthDate
+      - businessPhone
+      - childrenCount
+      - contractType
+      - customNote
+      - directManager
+      - email
+      - emergencyContactName
+      - emergencyContactPhone
+      - emergencyContactRelationship
+      - externalNumber
+      - firstName
+      - hireDate
+      - holidaysCalendar
+      - homePhone
+      - id
+      - language
+      - lastName
+      - maritalStatus
+      - personalEmail
+      - plannedFiring
+      - position
+      - probationEndDate
+      - seniorityBeforeHireMonths
+      - seniorityBeforeHireYears
+      - sex
+      - teams
+      - timezone
+      - workingWeek
+      - youngestChildBirthDate
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: Employee id number
+      firstName:
+        type: string
+        example: John
+        description: Employee first name
+      lastName:
+        type: string
+        example: Smith
+        description: Employee last name
+      email:
+        type: string
+        example: john.smith@domain.com
+        description: Employee email
+      externalNumber:
+        type: string
+        example: AYU23
+        description: External employee number
+      workingWeek:
+        description: Working week
+        $ref: '#/definitions/SimpleWorkingWeek'
+      approvalFlow:
+        description: Approval flow
+        $ref: '#/definitions/SimpleAcceptanceFlow'
+      position:
+        description: Position
+        $ref: '#/definitions/SimplePosition'
+      teams:
+        type: array
+        description: Teams
+        items:
+          $ref: '#/definitions/SimpleTeam'
+      admin:
+        type: boolean
+        description: Is the employee is an admin?
+      contractType:
+        description: Contract type
+        $ref: '#/definitions/SimpleContractType'
+      language:
+        type: string
+        example: EN
+        description: Employee language
+      timezone:
+        type: string
+        example: Europe/Warsaw
+        description: Employee timezone
+      directManager:
+        description: Employee direct manager
+        $ref: '#/definitions/SimpleEmployee'
+      birthDate:
+        type: string
+        format: date
+        example: '2017-02-20'
+        description: Birth date
+      hireDate:
+        type: string
+        format: date
+        example: '2017-02-20'
+        description: Hire date
+      businessPhone:
+        type: string
+        example: '827032162'
+        description: Business phone
+      homePhone:
+        type: string
+        example: '826021237'
+        description: Home phone
+      personalEmail:
+        type: string
+        example: john.smith@personalDomain.com
+        description: Personal email
+      addressStreet:
+        type: string
+        example: Small Street
+        description: Address street
+      addressNumber:
+        type: string
+        example: 2/12
+        description: Address building/flat number
+      addressCity:
+        type: string
+        example: Warsaw
+        description: Address city
+      addressPostalCode:
+        type: string
+        example: 15-322
+        description: Address postal code
+      addressProvinceState:
+        type: string
+        example: Main province
+        description: Address province/state.
+      addressCountry:
+        type: string
+        example: Poland
+        description: Address country
+      emergencyContactName:
+        type: string
+        example: Contact name
+        description: Emergency contact name
+      emergencyContactRelationship:
+        type: string
+        example: Contact relationship
+        description: Emergency contact relationship
+      emergencyContactPhone:
+        type: string
+        example: '820321876'
+        description: Emergency contact phone
+      holidaysCalendar:
+        description: Emergency contact name
+        $ref: '#/definitions/GetHolidayCalendarOut'
+      maritalStatus:
+        type: string
+        description: Martial status
+        enum:
+          - SINGLE
+          - MARRIED
+          - WIDOWED
+          - SEPARATED
+          - DIVORCED
+          - NOT_SET
+      probationEndDate:
+        type: string
+        format: date
+        example: '2017-02-20'
+        description: Probation end date
+      plannedFiring:
+        type: string
+        format: date
+        example: '2017-02-20'
+        description: Planned firing
+      seniorityBeforeHireYears:
+        type: integer
+        format: int32
+        description: Seniority before hire - years
+      seniorityBeforeHireMonths:
+        type: integer
+        format: int32
+        description: Seniority before hire - months
+      childrenCount:
+        type: integer
+        format: int32
+        description: Number of children
+      youngestChildBirthDate:
+        type: string
+        format: date
+        example: '2017-02-20'
+        description: The youngest child birth date
+      customNote:
+        type: string
+        example: Optional custom note
+        description: Custom note
+      sex:
+        type: string
+        description: Sex
+        enum:
+          - MALE
+          - FEMALE
+          - OTHER
+          - NOT_SET
+      archived:
+        type: boolean
+        description: Is employee archived?
+  EmployeePresenceStatus:
+    type: object
+    required:
+      - employee
+      - status
+    properties:
+      employee:
+        type: string
+        example: John White
+        description: Employee full name
+      status:
+        type: string
+        example: PTO
+        description: Employee presence status
+  EmployeeSimpleOut:
+    type: object
+    required:
+      - email
+      - firstName
+      - lastName
+    properties:
+      firstName:
+        type: string
+        example: John
+        description: Employee first name
+      lastName:
+        type: string
+        example: Williams
+        description: Employee last name
+      email:
+        type: string
+        example: john.williams@domain.com
+        description: Employee email
+      externalId:
+        type: string
+        example: A12Y
+        description: Employee external identifier
+  EmployeesOut:
+    type: object
+    required:
+      - currentPage
+      - employees
+      - totalPages
+    properties:
+      employees:
+        type: array
+        description: List of employees
+        items:
+          $ref: '#/definitions/EmployeeFullOut'
+      currentPage:
+        type: integer
+        format: int32
+        description: Current page
+      totalPages:
+        type: integer
+        format: int32
+        description: Total pages
+  ErrorResponse:
+    type: object
+    properties:
+      message:
+        type: string
+        example: Api error
+        description: Human readable error explanation.
+      code:
+        type: string
+        example: INVALID_JSON_PAYLOAD
+        description: Error code.
+      field:
+        type: string
+        example: field
+        description: Which field of payload object caused error. NULL when error is
+          not related to particular field
+    description: Error response.
+  FilterBalanceEntriesIn:
+    type: object
+    required:
+      - from
+      - to
+    properties:
+      from:
+        type: string
+        format: date
+        example: '2020-01-10'
+        description: Start date of dates range to search request in ISO format
+      to:
+        type: string
+        format: date
+        example: '2020-01-15'
+        description: End date of dates range to search request in ISO format
+      teams:
+        type: array
+        description: 'List of teams names or identifiers to search. As a result there
+          will be absence requests of employees who are members of at least one of
+          provided teams. Example: ["First Team", "Second Team", "Third Team"]'
+        items:
+          type: string
+      positions:
+        type: array
+        description: 'List of positions names or identifiers to search. As a result
+          there will be absence requests of employees who have one of provided positions.
+          Example: ["Developer", "Support", "Architect"]'
+        items:
+          type: string
+      contractTypes:
+        type: array
+        description: 'List of contract types names or identifiers to search. As a
+          result there will be absence requests of employees who have one of contract
+          type. Example: ["firstContract", "secondContract"]'
+        items:
+          type: string
+      employees:
+        type: array
+        description: 'List of employees e-mails or logins. Example: ["john.smith@domain.com",
+          "mark.small@domain.com"]'
+        items:
+          type: string
+    description: Searching working time balances advanced filter.
+  FilterTimesheetEntriesIn:
+    type: object
+    required:
+      - from
+      - to
+    properties:
+      from:
+        type: string
+        format: date
+        example: '2018-10-01'
+        description: Start date of dates range to search timesheet entries in ISO
+          format
+      to:
+        type: string
+        format: date
+        example: '2018-10-01'
+        description: End date of dates range to search timesheet entries in ISO format
+      teams:
+        type: array
+        description: 'List of teams names or identifiers to search. As a result there
+          will be timesheet entries of employees who are members of at least one of
+          provided teams. Example: ["First Team", "Second Team"]'
+        items:
+          type: string
+      positions:
+        type: array
+        description: 'List of positions names or identifiers to search. As a result
+          there will be timesheet entries of employees who have one of provided positions.
+          Example: ["Developer", "Support"]'
+        items:
+          type: string
+      contractTypes:
+        type: array
+        description: 'List of contract types names or identifiers to search. As a
+          result there will be timesheet entries of employees who have one of contract
+          type. Example: ["Full Time"]'
+        items:
+          type: string
+      employees:
+        type: array
+        description: 'List of employees e-mails or logins. Example: ["john.white@domain.com",
+          "mark.smith@domain.com"]'
+        items:
+          type: string
+    description: Searching timesheet entries.
+  FindAbsencesAdvancedIn:
+    type: object
+    required:
+      - from
+      - to
+    properties:
+      from:
+        type: string
+        format: date
+        example: '2017-01-10'
+        description: Start date of dates range to search request in ISO format
+      to:
+        type: string
+        format: date
+        example: '2017-01-15'
+        description: End date of dates range to search request in ISO format
+      absenceTypes:
+        type: array
+        description: 'List of absence types names or identifiers to search. Example:
+          ["Annual Leave", "Remote Work", "Sick Leave"]'
+        items:
+          type: string
+      teams:
+        type: array
+        description: 'List of teams names or identifiers to search. As a result there
+          will be absence requests of employees who are members of at least one of
+          provided teams. Example: ["First Team", "Second Team", "Third Team"]'
+        items:
+          type: string
+      positions:
+        type: array
+        description: 'List of positions names or identifiers to search. As a result
+          there will be absence requests of employees who have one of provided positions.
+          Example: ["Developer", "Support", "Architect"]'
+        items:
+          type: string
+      contractTypes:
+        type: array
+        description: 'List of contract types names or identifiers to search. As a
+          result there will be absence requests of employees who have one of contract
+          type. Example: ["firstContract", "secondContract"]'
+        items:
+          type: string
+      employees:
+        type: array
+        description: 'List of employees e-mails or logins. Example: ["john.smith@domain.com",
+          "mark.small@domain.com"]'
+        items:
+          type: string
+      createdFrom:
+        type: string
+        format: date-time
+        example: 2017-01-23T08:00+01:00
+        description: 'Filter absence requests by date of creation. As a result there
+          will be absence requests created at the provided moment or later. Please
+          provide the date and time in ISO 8601 format with time zone. '
+      createdTo:
+        type: string
+        format: date-time
+        example: 2017-01-24T00:00+01:00
+        description: Filter absence requests by date of creation. As a result there
+          will be absence requests created before the provided moment. Please provide
+          the date and time in ISO 8601 format with time zone.
+      updatedFrom:
+        type: string
+        format: date-time
+        example: 2017-01-23T08:00+01:00
+        description: Filter absence requests by date of last update. As a result there
+          will be absence requests updated at the provided moment or later. Please
+          provide the date and time in ISO 8601 format with time zone.
+      updatedTo:
+        type: string
+        format: date-time
+        example: 2017-01-24T00:00+01:00
+        description: Filter absence requests by date of last update. As a result there
+          will be absence requests updated before the provided moment. Please provide
+          the date and time in ISO 8601 format with time zone.
+      absenceStatuses:
+        type: array
+        example: '[PENDING, APPROVED]'
+        description: 'Filter absence requests by absence statuses. As a result there
+          will be absence requests with chosen statuses. By default return all absence
+          requests. Allowed values: ["PENDING", "PENDING_CANCELLATION", "REJECTED",
+          "APPROVED", "CANCELED", "REVOKED"]'
+        items:
+          type: string
+    description: Searching absence requests advanced filter.
+  FindAbsencesInRangeIn:
+    type: object
+    required:
+      - employee
+      - from
+      - to
+    properties:
+      employee:
+        type: string
+        example: john.white@mycompany.com
+        description: Employee e-mail or login
+      from:
+        type: string
+        format: date
+        example: '2017-01-10'
+        description: Start date of dates range to search request in ISO format
+      to:
+        type: string
+        format: date
+        example: '2017-01-15'
+        description: End date of dates range to search request in ISO format
+    description: Searching absence requests filter.
+  FindHolidaysInRangeIn:
+    type: object
+    required:
+      - employee
+      - from
+      - to
+    properties:
+      employee:
+        type: string
+        example: john.white@mycompany.com
+        description: Employee e-mail or login
+      from:
+        type: string
+        format: date
+        example: '2017-01-10'
+        description: Start date of dates range to search in ISO format
+      to:
+        type: string
+        format: date
+        example: '2017-01-15'
+        description: End date of dates range to search in ISO format
+    description: Searching public holidays for employee filter.
+  GetAbsenceTypeOut:
+    type: object
+    required:
+      - durationUnit
+      - id
+      - name
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: Absence type ID
+      name:
+        type: string
+        example: Annual Leave
+        description: Absence type name
+      durationUnit:
+        type: string
+        description: 'Entitlement amount unit '
+        enum:
+          - DAYS
+          - HOURS
+      externalId:
+        type: string
+        example: P001
+        description: Absence type external ID
+  GetBalanceOfEmployeeAndAbsenceType:
+    type: object
+    required:
+      - absenceTypeId
+      - date
+      - employee
+    properties:
+      absenceTypeId:
+        type: string
+        example: PTO
+        description: Absence type Id
+      employee:
+        type: string
+        example: john.white@mycompany.com
+        description: Employee e-mail or login
+      date:
+        type: string
+        format: date
+        example: '2018-09-25'
+        description: Date in ISO format
+  GetBreakTypeOut:
+    type: object
+    required:
+      - id
+      - name
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: Break type id
+      name:
+        type: string
+        example: Break name
+        description: Break type name
+  GetEmployeesBalancesIn:
+    type: object
+    required:
+      - absenceTypeId
+      - date
+    properties:
+      absenceTypeId:
+        type: string
+        example: PTO
+        description: Absence type Id
+      teams:
+        type: array
+        description: 'List of teams names or identifiers to search. As a result there
+          will be balances of employees who are members of at least one of provided
+          teams. Example: ["First Team", "Second Team", "Third Team"]'
+        items:
+          type: string
+      positions:
+        type: array
+        description: 'List of positions names or identifiers to search. As a result
+          there will be balances of employees who have one of provided positions.
+          Example: ["Developer", "Support", "Architect"]'
+        items:
+          type: string
+      contractTypes:
+        type: array
+        description: 'List of contract types names or identifiers to search. As a
+          result there will be balances of employees who have one of contract type.
+          Example: ["firstContract", "secondContract"]'
+        items:
+          type: string
+      employees:
+        type: array
+        description: 'List of employees e-mails or logins. Example: ["john.smith@domain.com",
+          "mark.small@domain.com"]'
+        items:
+          type: string
+      date:
+        type: string
+        format: date
+        example: '2018-09-25'
+        description: Date in ISO format
+  GetHolidayCalendarOut:
+    type: object
+    required:
+      - id
+      - name
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: Holiday calendar id
+      name:
+        type: string
+        example: Primary calendar
+        description: Holiday calendar name
+  GetPresenceReportRequest:
+    type: object
+    required:
+      - dateFrom
+      - dateTo
+      - limit
+      - page
+    properties:
+      dateFrom:
+        type: string
+        format: date
+        example: '2017-01-10'
+        description: Start date of dates range to generate presence report in ISO
+          format
+      dateTo:
+        type: string
+        format: date
+        example: '2017-01-15'
+        description: End date of dates range to  generate presence report in ISO format
+      page:
+        type: integer
+        format: int32
+        example: 0
+        description: Number of result page
+        minimum: 0
+      limit:
+        type: integer
+        format: int32
+        example: 100
+        description: Number of results returned in one request
+        minimum: 1
+        maximum: 100
+  HolidayOut:
+    type: object
+    required:
+      - end
+      - halfDay
+      - halfdayPeriod
+      - name
+      - start
+    properties:
+      name:
+        type: string
+        example: Holiday name
+        description: Public holiday name
+      start:
+        type: string
+        format: date
+        example: '2017-02-20'
+        description: First day of the holiday
+      end:
+        type: string
+        format: date
+        example: '2017-02-20'
+        description: Last day of the holiday
+      halfDay:
+        type: boolean
+        description: Half day holiday
+      halfdayPeriod:
+        type: string
+        description: If halfDay is true halfdayPeriod tells which part of day is non-working
+        enum:
+          - AM
+          - PM
+          - 'null'
+  InvitationEmployeeIn:
+    type: object
+    required:
+      - employee
+    properties:
+      employee:
+        type: string
+        example: john.white@mycompany.com
+        description: Employee e-mail or login
+  LocalDateTime:
+    type: object
+    properties:
+      year:
+        type: integer
+        format: int32
+      dayOfMonth:
+        type: integer
+        format: int32
+      chronology:
+        $ref: '#/definitions/Chronology'
+      dayOfWeek:
+        type: integer
+        format: int32
+      dayOfYear:
+        type: integer
+        format: int32
+      era:
+        type: integer
+        format: int32
+      millisOfDay:
+        type: integer
+        format: int32
+      centuryOfEra:
+        type: integer
+        format: int32
+      yearOfEra:
+        type: integer
+        format: int32
+      yearOfCentury:
+        type: integer
+        format: int32
+      weekyear:
+        type: integer
+        format: int32
+      monthOfYear:
+        type: integer
+        format: int32
+      weekOfWeekyear:
+        type: integer
+        format: int32
+      hourOfDay:
+        type: integer
+        format: int32
+      minuteOfHour:
+        type: integer
+        format: int32
+      secondOfMinute:
+        type: integer
+        format: int32
+      millisOfSecond:
+        type: integer
+        format: int32
+      fields:
+        type: array
+        items:
+          $ref: '#/definitions/DateTimeField'
+      values:
+        type: array
+        items:
+          type: integer
+          format: int32
+      fieldTypes:
+        type: array
+        items:
+          $ref: '#/definitions/DateTimeFieldType'
+  LocalTime:
+    type: object
+    properties:
+      chronology:
+        $ref: '#/definitions/Chronology'
+      millisOfDay:
+        type: integer
+        format: int32
+      hourOfDay:
+        type: integer
+        format: int32
+      minuteOfHour:
+        type: integer
+        format: int32
+      secondOfMinute:
+        type: integer
+        format: int32
+      millisOfSecond:
+        type: integer
+        format: int32
+      fields:
+        type: array
+        items:
+          $ref: '#/definitions/DateTimeField'
+      values:
+        type: array
+        items:
+          type: integer
+          format: int32
+      fieldTypes:
+        type: array
+        items:
+          $ref: '#/definitions/DateTimeFieldType'
+  ModifyBalanceOut:
+    type: object
+    required:
+      - result
+    properties:
+      result:
+        type: string
+        description: Result of modify entitlement
+        enum:
+          - ENTITLEMENT_MODIFIED
+  Person:
+    type: object
+    required:
+      - firstName
+      - lastName
+    properties:
+      firstName:
+        type: string
+        example: John
+        description: Employee first name
+      lastName:
+        type: string
+        example: White
+        description: Employee first name
+  PersonForBreakTypes:
+    type: object
+    required:
+      - person
+    properties:
+      person:
+        type: string
+        example: john.white@mycompany.com
+        description: Employee identifier. You can use e-mail or external identifier
+          in format (externalNumber:ABC123)
+  PersonForProjects:
+    type: object
+    required:
+      - person
+    properties:
+      person:
+        type: string
+        example: john.white@mycompany.com
+        description: Employee identifier. You can use e-mail or external identifier
+          in format (externalNumber:ABC123)
+  PositionDto:
+    type: object
+    required:
+      - id
+      - name
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: Position id
+      name:
+        type: string
+        example: Manager
+        description: Position name
+    description: Position
+  ProjectDto:
+    type: object
+    properties:
+      from:
+        type: string
+        format: date-time
+        example: 2019-09-16T11:15:30+0000
+        description: Date and time when employee started working on project
+      to:
+        type: string
+        format: date-time
+        example: 2019-09-13T10:05:39+0000
+        description: Date and time when employee finished working on project. Has
+          null value if work on project was not finished
+      duration:
+        type: integer
+        format: int64
+        example: 28800
+        description: Duration of time spent on a project in seconds. Has null value
+          if work on project was not finished
+      project:
+        description: Project properties
+        $ref: '#/definitions/ProjectOut'
+  ProjectDtoIn:
+    type: object
+    required:
+      - projectEnd
+      - projectStart
+      - projectType
+    properties:
+      projectType:
+        type: integer
+        format: int64
+        example: 1
+        description: ID project type
+      projectStart:
+        example: '2020-03-15T09:30:00'
+        description: Date and time of project worklog start in ISO format
+        $ref: '#/definitions/LocalDateTime'
+      projectEnd:
+        example: '2020-03-15T10:30:00'
+        description: Date and time of project worklog end in ISO format
+        $ref: '#/definitions/LocalDateTime'
+    description: Projects
+  ProjectOut:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: Project id
+      name:
+        type: string
+        example: Primary project
+        description: Project name
+  ProjectOutWithAssignedEmployeesTeams:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: Project id
+      name:
+        type: string
+        example: Primary project
+        description: Project name
+      employees:
+        type: array
+        description: Assigned employees
+        items:
+          $ref: '#/definitions/EmployeeSimpleOut'
+      teams:
+        type: array
+        description: Assigned teams
+        items:
+          $ref: '#/definitions/TeamOut'
+  PublicArchiveEmployeeIn:
+    type: object
+    required:
+      - employee
+    properties:
+      employee:
+        type: string
+        example: john.white@mycompany.com
+        description: Employee e-mail or login
+  PublicCreateEmployeeIn:
+    type: object
+    required:
+      - admin
+      - approvalFlow
+      - email
+      - firstName
+      - holidaysCalendar
+      - lastName
+      - maritalStatus
+      - sex
+      - workingWeek
+    properties:
+      firstName:
+        type: string
+        example: John
+        description: Employee first name
+      lastName:
+        type: string
+        example: Williams
+        description: Employee last name
+      email:
+        type: string
+        example: john.white@mycompany.com
+        description: Employee email
+      workingWeek:
+        type: string
+        example: Working week name
+        description: Working week name or identifier
+      approvalFlow:
+        type: string
+        example: Flow name
+        description: Approval flow name or identifier
+      position:
+        type: string
+        example: Developer
+        description: Position name or identifier.
+      teams:
+        type: array
+        description: 'List of teams names or identifiers. Example: ["Developers Team"]'
+        items:
+          type: string
+      holidaysCalendar:
+        type: string
+        example: Primary calendar
+        description: Holidays calendar name or identifier
+      sex:
+        type: string
+        description: Sex
+        enum:
+          - MALE
+          - FEMALE
+          - OTHER
+          - NOT_SET
+      maritalStatus:
+        type: string
+        description: Martial status
+        enum:
+          - SINGLE
+          - MARRIED
+          - WIDOWED
+          - SEPARATED
+          - DIVORCED
+          - NOT_SET
+      admin:
+        type: boolean
+        description: Is the employee is an admin?
+      contractType:
+        type: string
+        example: Contract type
+        description: Contract type name or identifier
+      externalNumber:
+        type: string
+        example: A12Y
+        description: External number
+      directManager:
+        type: string
+        example: john.white@mycompany.com
+        description: Direct manager e-mail or login
+      birthDate:
+        type: string
+        format: date
+        example: '2017-02-20'
+        description: Birth date in ISO format
+      hireDate:
+        type: string
+        format: date
+        example: '2017-02-20'
+        description: Hire date in ISO format
+      businessPhone:
+        type: string
+        example: '876234928'
+        description: Business phone
+      homePhone:
+        type: string
+        example: '283018271'
+        description: Home phone
+      personalEmail:
+        type: string
+        example: john.white@mycompany.com
+        description: Personal email
+      addressStreet:
+        type: string
+        example: Buckfast Street
+        description: Address street
+      addressNumber:
+        type: string
+        example: 2/20
+        description: Address building/flat number
+      addressCity:
+        type: string
+        example: Warsaw
+        description: Address city
+      addressPostalCode:
+        type: string
+        example: 12-333
+        description: Address postal code
+      addressProvinceState:
+        type: string
+        example: Main Province
+        description: Address province/state
+      addressCountry:
+        type: string
+        example: Poland
+        description: Address country
+      emergencyContactName:
+        type: string
+        example: Contact name
+        description: Emergency contact name
+      emergencyContactRelationship:
+        type: string
+        example: Contact relationship
+        description: Emergency contact relationship
+      emergencyContactPhone:
+        type: string
+        example: '198263098'
+        description: Emergency contact phone
+      probationEndDate:
+        type: string
+        format: date
+        example: '2017-02-20'
+        description: Probation end date in ISO format
+      plannedFiring:
+        type: string
+        format: date
+        example: '2017-02-20'
+        description: Planned firing in ISO format
+      seniorityBeforeHireYears:
+        type: integer
+        format: int32
+        description: Seniority before hire - years
+      seniorityBeforeHireMonths:
+        type: integer
+        format: int32
+        description: Seniority before hire - months
+      childrenCount:
+        type: integer
+        format: int32
+        description: Number of children
+      youngestChildBirthDate:
+        type: string
+        format: date
+        example: '2017-02-20'
+        description: The youngest child birth date in ISO format
+      customNote:
+        type: string
+        example: Optional custom note about employee
+        description: Custom note
+  PublicEditEmployeeIn:
+    type: object
+    required:
+      - employee
+    properties:
+      employee:
+        type: string
+        example: john.white@mycompany.com
+        description: Employee e-mail or login
+      firstName:
+        example: John
+        description: Employee first name to update.
+        $ref: '#/definitions/ThreeStateOptionalString'
+      lastName:
+        example: Williams
+        description: Employee last name to update.
+        $ref: '#/definitions/ThreeStateOptionalString'
+      email:
+        example: john.williams@domain.com
+        description: Employee email to update.
+        $ref: '#/definitions/ThreeStateOptionalString'
+      workingWeek:
+        example: Working week name
+        description: Working week name or identifier to update.
+        $ref: '#/definitions/ThreeStateOptionalString'
+      approvalFlow:
+        example: Main Approval Flow
+        description: Approval flow name or identifier to update.
+        $ref: '#/definitions/ThreeStateOptionalString'
+      position:
+        example: Developer
+        description: Position name or identifier to update.
+        $ref: '#/definitions/ThreeStateOptionalString'
+      teams:
+        description: List of teams names or identifiers to update.
+        $ref: '#/definitions/ThreeStateOptionalListString'
+      holidaysCalendar:
+        example: Primary calendar
+        description: Holidays calendar name or identifier to update.
+        $ref: '#/definitions/ThreeStateOptionalString'
+      sex:
+        description: Sex
+        $ref: '#/definitions/ThreeStateOptionalSex'
+      maritalStatus:
+        description: Marital status to update
+        $ref: '#/definitions/ThreeStateOptionalMaritalStatus'
+      admin:
+        description: Is the employee is an admin?
+        $ref: '#/definitions/ThreeStateOptionalBoolean'
+      contractType:
+        example: Full time
+        description: Contract type name or identifier.
+        $ref: '#/definitions/ThreeStateOptionalString'
+      externalNumber:
+        example: A27D
+        description: External number.
+        $ref: '#/definitions/ThreeStateOptionalString'
+      directManager:
+        example: mark.smith@domain.com
+        description: Direct manager e-mail or login.
+        $ref: '#/definitions/ThreeStateOptionalString'
+      birthDate:
+        example: '2017-02-20'
+        description: Birth date to update in ISO format
+        $ref: '#/definitions/ThreeStateOptionalLocalDate'
+      hireDate:
+        example: '2017-02-20'
+        description: Hire date to update in ISO format
+        $ref: '#/definitions/ThreeStateOptionalLocalDate'
+      businessPhone:
+        example: '982027621'
+        description: Business phone to update.
+        $ref: '#/definitions/ThreeStateOptionalString'
+      homePhone:
+        example: '982027621'
+        description: Home phone to update.
+        $ref: '#/definitions/ThreeStateOptionalString'
+      personalEmail:
+        example: john.white@mycompany.com
+        description: 'Personal email to update. Example: '
+        $ref: '#/definitions/ThreeStateOptionalString'
+      addressStreet:
+        example: New Street
+        description: Address street to update
+        $ref: '#/definitions/ThreeStateOptionalString'
+      addressNumber:
+        example: 2/12
+        description: Address building/flat number to update
+        $ref: '#/definitions/ThreeStateOptionalString'
+      addressCity:
+        example: Warsaw
+        description: Address city to update
+        $ref: '#/definitions/ThreeStateOptionalString'
+      addressPostalCode:
+        example: 28-283
+        description: Address postal code to update
+        $ref: '#/definitions/ThreeStateOptionalString'
+      addressProvinceState:
+        example: Main province
+        description: Address province/state to update
+        $ref: '#/definitions/ThreeStateOptionalString'
+      addressCountry:
+        example: Poland
+        description: Address country to update
+        $ref: '#/definitions/ThreeStateOptionalString'
+      emergencyContactName:
+        example: Contact name
+        description: Emergency contact name to update
+        $ref: '#/definitions/ThreeStateOptionalString'
+      emergencyContactRelationship:
+        example: Contact relationship
+        description: Emergency contact relationship to update
+        $ref: '#/definitions/ThreeStateOptionalString'
+      emergencyContactPhone:
+        example: '928196340'
+        description: Emergency contact phone to update
+        $ref: '#/definitions/ThreeStateOptionalString'
+      probationEndDate:
+        example: '2017-02-20'
+        description: Probation end date to update in ISO format
+        $ref: '#/definitions/ThreeStateOptionalLocalDate'
+      plannedFiring:
+        example: '2017-02-20'
+        description: Planned firing to update in ISO format
+        $ref: '#/definitions/ThreeStateOptionalLocalDate'
+      seniorityBeforeHireYears:
+        description: Seniority before hire to update- years
+        $ref: '#/definitions/ThreeStateOptionalInteger'
+      seniorityBeforeHireMonths:
+        description: Seniority before hire to update- months
+        $ref: '#/definitions/ThreeStateOptionalInteger'
+      childrenCount:
+        description: Number of children to update
+        $ref: '#/definitions/ThreeStateOptionalInteger'
+      youngestChildBirthDate:
+        example: '2017-02-20'
+        description: The youngest child birth date to update in ISO format
+        $ref: '#/definitions/ThreeStateOptionalLocalDate'
+      customNote:
+        example: Custom note about employee
+        description: Custom note to update
+        $ref: '#/definitions/ThreeStateOptionalString'
+  PublicEmployeesIn:
+    type: object
+    properties:
+      page:
+        type: integer
+        format: int32
+        example: 0
+        description: Page number
+  PublicSearchEmployeesIn:
+    type: object
+    properties:
+      employee:
+        type: string
+        example: john.white@mycompany.com
+        description: Employee identifier. You can use e-mail or external identifier
+          in format (externalNumber:ABC123)
+      contractTypes:
+        type: array
+        description: Contract type name or identifier
+        items:
+          type: string
+      positions:
+        type: array
+        description: List of Position names or identifiers.
+        items:
+          type: string
+      teams:
+        type: array
+        description: List of teams names or identifiers
+        items:
+          type: string
+      withArchived:
+        type: boolean
+        description: Should return also archived employees?
+  PunchClockIn:
+    type: object
+    required:
+      - person
+      - time
+    properties:
+      person:
+        type: string
+        example: john.white@mycompany.com
+        description: Employee identifier. You can use e-mail or external identifier
+          in format (externalNumber:ABC123)
+      time:
+        example: '2015-11-10T08:30:00'
+        description: Date and time of event occurence in ISO format.
+        $ref: '#/definitions/LocalDateTime'
+      projectId:
+        type: integer
+        format: int64
+        example: 1
+        description: Project id.
+    description: Punch clock in method payload.
+  PunchClockOut:
+    type: object
+    required:
+      - person
+      - time
+    properties:
+      person:
+        type: string
+        example: john.white@mycompany.com
+        description: Employee identifier. You can use e-mail or external identifier
+          in format (externalNumber:ABC123)
+      time:
+        example: '2015-11-10T08:30:00'
+        description: Date and time of event occurence in ISO format.
+        $ref: '#/definitions/LocalDateTime'
+    description: Punch clock out method payload.
+  PunchOut:
+    type: object
+    required:
+      - person
+      - shiftStatus
+    properties:
+      person:
+        description: Employee description
+        $ref: '#/definitions/Person'
+      shiftStatus:
+        type: string
+        description: Employee shift status after request
+        enum:
+          - STARTED
+          - FINISHED
+  ShiftStatusRequest:
+    type: object
+    required:
+      - person
+    properties:
+      person:
+        type: string
+        example: john.white@mycompany.com
+        description: Employee identifier. You can use e-mail or external identifier
+          in format (externalNumber:ABC123)
+  SimpleAcceptanceFlow:
+    type: object
+    required:
+      - id
+      - name
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: Approval flow id
+      name:
+        type: string
+        example: Default Approval Flow
+        description: Approval flow name
+  SimpleContractType:
+    type: object
+    required:
+      - id
+      - name
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: Contract type id
+      name:
+        type: string
+        example: Contract type
+        description: Contract type name
+  SimpleEmployee:
+    type: object
+    required:
+      - email
+      - id
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: Employee id
+      email:
+        type: string
+        example: john.white@domain.com
+        description: Employee email
+  SimplePosition:
+    type: object
+    required:
+      - id
+      - name
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: Position id
+      name:
+        type: string
+        example: Developer
+        description: Position name
+  SimpleTeam:
+    type: object
+    required:
+      - id
+      - name
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: Team id
+      name:
+        type: string
+        example: Main Team
+        description: Team name
+  SimpleWorkingWeek:
+    type: object
+    required:
+      - id
+      - name
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: Working week id
+      name:
+        type: string
+        example: Full time
+        description: Working week name
+  TeamOut:
+    type: object
+    required:
+      - id
+      - name
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: Team ID
+      name:
+        type: string
+        example: Primary team
+        description: Team name
+  ThreeStateOptional:
+    type: object
+    properties:
+      value:
+        type: object
+  ThreeStateOptionalBoolean:
+    type: object
+    properties:
+      value:
+        type: boolean
+  ThreeStateOptionalInteger:
+    type: object
+    properties:
+      value:
+        type: integer
+        format: int32
+  ThreeStateOptionalListString:
+    type: object
+    properties:
+      value:
+        type: array
+        items:
+          type: string
+  ThreeStateOptionalLocalDate:
+    type: object
+    properties:
+      value:
+        type: string
+        format: date
+  ThreeStateOptionalMaritalStatus:
+    type: object
+    properties:
+      value:
+        type: string
+        enum:
+          - SINGLE
+          - MARRIED
+          - WIDOWED
+          - SEPARATED
+          - DIVORCED
+          - NOT_SET
+  ThreeStateOptionalSex:
+    type: object
+    properties:
+      value:
+        type: string
+        enum:
+          - MALE
+          - FEMALE
+          - OTHER
+          - NOT_SET
+  ThreeStateOptionalString:
+    type: object
+    properties:
+      value:
+        type: string
+  TimeZone:
+    type: object
+    properties:
+      displayName:
+        type: string
+      id:
+        type: string
+      dstsavings:
+        type: integer
+        format: int32
+      rawOffset:
+        type: integer
+        format: int32
+  TimesheetEntryOut:
+    type: object
+    required:
+      - breaks
+      - closed
+      - duration
+      - id
+      - person
+      - projects
+      - started
+      - startedTimeZone
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: Timesheet entry ID
+      started:
+        type: string
+        format: date-time
+        example: 2018-06-30T10:30:00+0200
+        description: Date and time of timesheet entry started
+      finished:
+        type: string
+        format: date-time
+        example: 2018-06-30T10:30:00+0200
+        description: Date and time of timesheet entry finished. Has null value if
+          employee does not clock out
+      startedTimeZone:
+        example: Europe/Warsaw
+        description: Started work timzeone.
+        $ref: '#/definitions/TimeZone'
+      finishedTimeZone:
+        example: Europe/Warsaw
+        description: Finished work timezone. Has null value if employee does not clock
+          out.
+        $ref: '#/definitions/TimeZone'
+      duration:
+        type: integer
+        format: int64
+        example: 28800
+        description: Duration of timesheet entry in seconds. Has 0 value if employee
+          does not clock out.
+      person:
+        description: Employee
+        $ref: '#/definitions/EmployeeSimpleOut'
+      breaks:
+        type: array
+        description: List of breaks
+        items:
+          $ref: '#/definitions/BreakDto'
+      projects:
+        type: array
+        description: List of projects
+        items:
+          $ref: '#/definitions/ProjectDto'
+      closed:
+        type: boolean
+        description: Is shift closed?
+  WorkingDay:
+    type: object
+    required:
+      - dayName
+      - duration
+      - finishTime
+      - isWorkingDay
+      - startTime
+    properties:
+      dayName:
+        type: string
+        example: MONDAY
+        description: Working day name.
+        enum:
+          - MONDAY
+          - TUESDAY
+          - WEDNESDAY
+          - THURSDAY
+          - FRIDAY
+          - SATURDAY
+          - SUNDAY
+      isWorkingDay:
+        type: boolean
+        example: true
+        description: Is it working day.
+      startTime:
+        example: '09:00:00.000'
+        description: 'Start of working time. Pattern: HH:mm:ss.SSS. Has null value
+          when specified day is not working day.'
+        $ref: '#/definitions/LocalTime'
+      finishTime:
+        example: '13:00:00.000'
+        description: 'Finish of working time. Pattern: HH:mm:ss.SSS. Has null value
+          when specified day is not working day.'
+        $ref: '#/definitions/LocalTime'
+      duration:
+        type: integer
+        format: int64
+        example: 28800
+        description: Work duration in seconds >= 0 or has null value when specified
+          day is not working day.
+  WorkingWeekOut:
+    type: object
+    required:
+      - id
+      - name
+      - workingDays
+    properties:
+      id:
+        type: integer
+        format: int64
+        example: 1
+        description: Working week id.
+      name:
+        type: string
+        example: Full time
+        description: Working week name.
+      workingDays:
+        type: array
+        description: Working week days.
+        items:
+          $ref: '#/definitions/WorkingDay'

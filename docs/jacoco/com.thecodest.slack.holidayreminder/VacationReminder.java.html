@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>VacationReminder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">holiday-reminder</a> &gt; <a href="index.source.html" class="el_package">com.thecodest.slack.activityrewards</a> &gt; <span class="el_source">VacationReminder.java</span></div><h1>VacationReminder.java</h1><pre class="source lang-java linenums">package com.thecodest.slack.holidayreminder;
+
+import static io.github.pellse.assembler.AssemblerBuilder.assemblerOf;
+import static io.github.pellse.assembler.stream.StreamAdapter.streamAdapter;
+import static io.github.pellse.util.query.MapperUtils.oneToOne;
+
+import com.google.common.annotations.VisibleForTesting;
+import com.slack.api.methods.response.chat.ChatPostMessageResponse;
+import com.thecodest.slack.holidayreminder.calamari.CalamariApi;
+import com.thecodest.slack.holidayreminder.calamari.CalamariEmployee;
+import com.thecodest.slack.holidayreminder.slack.SlackClient;
+import com.thecodest.slack.holidayreminder.slack.SlackUser;
+import javax.inject.Inject;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
+
+<span class="fc" id="L17">@Log</span>
+<span class="fc" id="L18">@RequiredArgsConstructor(onConstructor_ = {@Inject})</span>
+class VacationReminder implements Runnable {
+
+	private final Message message;
+	private final SlackClient slackClient;
+	private final CalamariApi calamariApi;
+	private final RunningCalculator runningCalculator;
+	private final Configuration configuration;
+
+	@Override
+	public void run() {
+<span class="pc bpc" id="L29" title="1 of 2 branches missed.">		if (!runningCalculator.shouldItRun()) {</span>
+<span class="fc" id="L30">			log.info(&quot;Not today&quot;);</span>
+<span class="fc" id="L31">			return;</span>
+		}
+<span class="nc" id="L33">		sendMessage();</span>
+<span class="nc" id="L34">	}</span>
+
+	@VisibleForTesting
+	void sendMessage() {
+<span class="fc" id="L38">		assemblerOf(Coder.class)</span>
+<span class="fc" id="L39">				.withIdExtractor(CalamariEmployee::email)</span>
+<span class="fc" id="L40">				.withAssemblerRules(</span>
+<span class="fc" id="L41">						oneToOne(slackClient::getUsersByEmails, SlackUser::normalizedEmail),</span>
+						Coder::new)
+<span class="fc" id="L43">				.using(streamAdapter())</span>
+<span class="fc" id="L44">				.assemble(calamariApi.employeesWithToMuchFreeDays(configuration.daysLimit()))</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">				.filter(coder -&gt; coder.slackUser() != null)</span>
+<span class="fc" id="L46">				.toList()</span>
+<span class="fc" id="L47">				.stream()</span>
+<span class="fc" id="L48">				.map(this::sendMessage)</span>
+<span class="fc" id="L49">				.forEach(c -&gt; log.info(String.valueOf(c)));</span>
+<span class="fc" id="L50">	}</span>
+
+	private ChatPostMessageResponse sendMessage(Coder coder) {
+<span class="fc" id="L53">		return slackClient.sendMessageToUser(coder.slackUser(), message.getMessage(coder.calamariEmployee()));</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
