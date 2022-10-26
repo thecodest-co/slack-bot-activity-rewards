@@ -1,7 +1,7 @@
 # Activity Rewards
 
-[![Build & deploy to prod](https://github.com/thecodest-co/slack-bot-activity-rewards/actions/workflows/prod-deployment.yml/badge.svg)](https://github.com/thecodest-co/slack-bot-vacation-reminder/actions/workflows/prod-deployment.yml)
-[![Build update page](https://github.com/thecodest-co/slack-bot-activity-rewards/actions/workflows/page.yml/badge.svg)](https://github.com/thecodest-co/slack-bot-vacation-reminder/actions/workflows/page.yml)
+[![Build & deploy to prod](https://github.com/thecodest-co/slack-bot-activity-rewards/actions/workflows/prod-deployment.yml/badge.svg)](https://github.com/thecodest-co/slack-bot-activity-rewards/actions/workflows/prod-deployment.yml)
+[![Build update page](https://github.com/thecodest-co/slack-bot-activity-rewards/actions/workflows/page.yml/badge.svg)](https://github.com/thecodest-co/slack-bot-activity-rewards/actions/workflows/page.yml)
 
 This is plugin to our slack-bot named Cody. On first working day of every month it sent information about winner of our
 #random channel contest.
