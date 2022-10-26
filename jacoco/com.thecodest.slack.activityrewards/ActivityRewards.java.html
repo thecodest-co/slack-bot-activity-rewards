@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ActivityRewards.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">activity-rewards</a> &gt; <a href="index.source.html" class="el_package">com.thecodest.slack.activityrewards</a> &gt; <span class="el_source">ActivityRewards.java</span></div><h1>ActivityRewards.java</h1><pre class="source lang-java linenums">package com.thecodest.slack.activityrewards;
+
+import static io.github.pellse.assembler.stream.StreamAdapter.streamAdapter;
+
+import com.google.common.annotations.VisibleForTesting;
+import com.thecodest.slack.activityrewards.aws.CustomS3Persistence;
+import com.thecodest.slack.activityrewards.slack.SlackClient;
+import com.thecodest.slack.activityrewards.slack.SlackUser;
+import io.github.pellse.assembler.AssemblerBuilder;
+import io.github.pellse.util.query.MapperUtils;
+import io.vavr.Tuple;
+import io.vavr.Tuple2;
+import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.inject.Inject;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
+
+<span class="fc" id="L22">@Log</span>
+<span class="fc" id="L23">@RequiredArgsConstructor(onConstructor_ = {@Inject})</span>
+class ActivityRewards implements Runnable {
+
+	private final SlackClient slackClient;
+	private final RunningCalculator localRunningCalculator;
+
+	private final DateCalculator dateCalculator;
+
+	private final CustomS3Persistence s3Persistence;
+
+	private final Configuration configuration;
+
+	@Override
+	public void run() {
+<span class="pc bpc" id="L37" title="1 of 2 branches missed.">		if (!localRunningCalculator.shouldItRun()) {</span>
+<span class="fc" id="L38">			log.info(&quot;Not today&quot;);</span>
+<span class="fc" id="L39">			return;</span>
+		}
+
+<span class="nc" id="L42">		var previousMonthStart = dateCalculator.getPreviousMonthStart();</span>
+<span class="nc" id="L43">		var messagesFromChannel = slackClient.getMessagesFromChannel(configuration.slackChannel(),</span>
+				previousMonthStart,
+<span class="nc" id="L45">				dateCalculator.getThisMonthStart());</span>
+<span class="nc" id="L46">		var monthlyResults = calculateScore(messagesFromChannel, previousMonthStart);</span>
+		// s3Persistence.save(monthlyResults);
+<span class="nc" id="L48">		sendMessage(monthlyResults);</span>
+<span class="nc" id="L49">	}</span>
+
+	@VisibleForTesting
+	void sendMessage(MonthlyResults monthlyResults) {
+<span class="nc" id="L53">		var max = monthlyResults.results().stream().max(Comparator.comparing(Result::score)).get();</span>
+<span class="nc" id="L54">		WinnerIsMessage winnerIsMessage = new WinnerIsMessage();</span>
+<span class="nc" id="L55">		final String message = winnerIsMessage.getMessage(max);</span>
+<span class="nc" id="L56">		slackClient.sendMessageToChannel(configuration.slackChannel(), message);</span>
+<span class="nc" id="L57">	}</span>
+
+	@VisibleForTesting
+	MonthlyResults calculateScore(List&lt;MessageBeing&gt; messageBeings, LocalDateTime monthStart) {
+<span class="nc" id="L61">		final List&lt;Tuple2&lt;String, Long&gt;&gt; resultsRaw = messageBeings.stream()</span>
+<span class="nc" id="L62">				.collect(Collectors.groupingBy(MessageBeing::userId, Collectors.counting()))</span>
+<span class="nc" id="L63">				.entrySet()</span>
+<span class="nc" id="L64">				.stream()</span>
+<span class="nc" id="L65">				.map(e -&gt; Tuple.of(e.getKey(), e.getValue()))</span>
+<span class="nc" id="L66">				.toList();</span>
+<span class="nc" id="L67">		var results = AssemblerBuilder.assemblerOf(Result.class)</span>
+<span class="nc" id="L68">				.withIdExtractor((Tuple2&lt;String, Long&gt; t) -&gt; t._1)</span>
+<span class="nc" id="L69">				.withAssemblerRules(</span>
+<span class="nc" id="L70">						MapperUtils.oneToOne(slackClient::getUsersByIds, SlackUser::slackId),</span>
+<span class="nc" id="L71">						(t, su) -&gt; new Result(su, t._2))</span>
+<span class="nc" id="L72">				.using(streamAdapter())</span>
+<span class="nc" id="L73">				.assemble(resultsRaw)</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">				.filter(r -&gt; r.slackUser() != null)</span>
+<span class="nc" id="L75">				.toList();</span>
+<span class="nc" id="L76">		return new MonthlyResults(monthStart.getMonth(), monthStart.getYear(), results);</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

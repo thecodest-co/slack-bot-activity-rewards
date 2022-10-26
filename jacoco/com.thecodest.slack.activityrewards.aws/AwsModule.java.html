@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AwsModule.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">activity-rewards</a> &gt; <a href="index.source.html" class="el_package">com.thecodest.slack.activityrewards.aws</a> &gt; <span class="el_source">AwsModule.java</span></div><h1>AwsModule.java</h1><pre class="source lang-java linenums">package com.thecodest.slack.activityrewards.aws;
+
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.services.s3.AmazonS3;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.google.inject.AbstractModule;
+import com.google.inject.name.Names;
+import java.util.Optional;
+
+<span class="fc" id="L11">public class AwsModule extends AbstractModule {</span>
+
+	@Override
+	protected void configure() {
+<span class="fc" id="L15">		bind(String.class)</span>
+<span class="fc" id="L16">				.annotatedWith(Names.named(&quot;aws-access-key&quot;))</span>
+<span class="fc" id="L17">				.toInstance(getProperty(&quot;AWS_ACCESS_KEY&quot;, &quot;&quot;));</span>
+<span class="fc" id="L18">		bind(String.class)</span>
+<span class="fc" id="L19">				.annotatedWith(Names.named(&quot;aws-secret-key&quot;))</span>
+<span class="fc" id="L20">				.toInstance(getProperty(&quot;AWS_SECRET_KEY&quot;, &quot;&quot;));</span>
+<span class="fc" id="L21">		bind(String.class)</span>
+<span class="fc" id="L22">				.annotatedWith(Names.named(&quot;aws-region&quot;))</span>
+<span class="fc" id="L23">				.toInstance(getProperty(&quot;AWS_REGION&quot;, &quot;&quot;));</span>
+<span class="fc" id="L24">		bind(AWSCredentials.class).toProvider(AWSCredentialsProvider.class);</span>
+<span class="fc" id="L25">		bind(AmazonS3.class).toProvider(AmazonS3Provider.class);</span>
+<span class="fc" id="L26">		bind(ObjectMapper.class).toInstance(new ObjectMapper().registerModule(new JavaTimeModule()));</span>
+<span class="fc" id="L27">		bind(CustomS3Persistence.class).to(CustomS3PersistenceImpl.class);</span>
+
+<span class="fc" id="L29">	}</span>
+
+	private String getProperty(String propertyName, String defaultValue) {
+<span class="fc" id="L32">		return Optional.ofNullable(System.getenv(propertyName)).orElse(defaultValue);</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

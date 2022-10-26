@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>Message xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../../target/site/apidocs/com/thecodest/slack/holidayreminder/Message.html">View Javadoc</a></div><pre>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <strong class="jxr_keyword">package</strong> com.thecodest.slack.holidayreminder;
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <strong class="jxr_keyword">import</strong> com.thecodest.slack.holidayreminder.calamari.CalamariEmployee;
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_javadoccomment"> * Message send to user.</em>
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <strong class="jxr_keyword">class</strong> <a name="Message" href="../../../../com/thecodest/slack/holidayreminder/Message.html#Message">Message</a> {
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  	<strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> String message;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  	<em class="jxr_comment">// CHECKSTYLE:OFF</em>
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  	Message() {
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  		<strong class="jxr_keyword">this</strong>.message = <span class="jxr_string">""</span><span class="jxr_string">"
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  				Hi %s,
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  				Famous American scientists have proven that work-life balance is damn necessary to keep you job satisfaction high. Just to name a few advantages from taking a <strong class="jxr_keyword">break</strong>:
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  				1. You have more time to fight with your family and friends :family:
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  				2. You can waste entire days on useless activities, not only afternoons and evenings :hourglass:
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  				3. You could spend more time on your side project that is going to trash anyway :put_litter_in_its_place:
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  				4. Life and reality are more tolerable when you are well rested :zzz:
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  				5. You could also travel a world and see something cool or smth :globe_with_meridians:
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  				I have spied in Calamari that you've got plenty of days off to take, <strong class="jxr_keyword">do</strong> you need any more arguments to enjoy your holiday?
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  				You deserve it! &lt;https:<em class="jxr_comment">//www.youtube.com/watch?v=bVRnMrl2oj8|Chill out like a BOSS&gt; :cool-doge:</em>
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  				Peace :peace-out:
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  				Cody
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  				<span class="jxr_string">""</span><span class="jxr_string">";
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  	}
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  	<em class="jxr_comment">// CHECKSTYLE:ON</em>
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  	<strong class="jxr_keyword">public</strong> String getMessage(CalamariEmployee calamariEmployee) {
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  		<strong class="jxr_keyword">return</strong> String.format(message, calamariEmployee.name(), calamariEmployee.balanceOut());
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  	}
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  }
+</pre>
+<hr/>
+<div id="footer">Copyright &#169; 2022. All rights reserved.</div>
+</body>
+</html>

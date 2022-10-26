@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RunningCalculatorProvider.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">activity-rewards</a> &gt; <a href="index.source.html" class="el_package">com.thecodest.slack.activityrewards</a> &gt; <span class="el_source">RunningCalculatorProvider.java</span></div><h1>RunningCalculatorProvider.java</h1><pre class="source lang-java linenums">package com.thecodest.slack.activityrewards;
+
+import java.util.Optional;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Provider;
+import javax.validation.constraints.NotNull;
+import lombok.extern.java.Log;
+
+<span class="fc" id="L10">@Log</span>
+class RunningCalculatorProvider implements Provider&lt;RunningCalculator&gt; {
+
+	private final Boolean isTestRun;
+
+	@Inject
+<span class="fc" id="L16">	RunningCalculatorProvider(@NotNull @Named(&quot;test-run&quot;) Boolean isTestRun) {</span>
+<span class="fc" id="L17">		this.isTestRun = isTestRun;</span>
+<span class="fc" id="L18">	}</span>
+
+	@Override
+	public RunningCalculator get() {
+<span class="fc" id="L22">		return Optional.of(isTestRun)</span>
+<span class="fc" id="L23">				.stream()</span>
+<span class="fc" id="L24">				.peek(b -&gt; log.warning(&quot;TEST_RUN is set to &quot; + b))</span>
+<span class="pc bpc" id="L25" title="1 of 2 branches missed.">				.map(b -&gt; b ? new FakeRunningCalculator() : new LocalRunningCalculator())</span>
+<span class="fc" id="L26">				.findFirst()</span>
+<span class="pc" id="L27">				.orElseThrow(() -&gt; new RuntimeException(&quot;Ops!&quot;));</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

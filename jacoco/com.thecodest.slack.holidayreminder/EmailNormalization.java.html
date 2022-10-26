@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EmailNormalization.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">holiday-reminder</a> &gt; <a href="index.source.html" class="el_package">com.thecodest.slack.activityrewards</a> &gt; <span class="el_source">EmailNormalization.java</span></div><h1>EmailNormalization.java</h1><pre class="source lang-java linenums">package com.thecodest.slack.holidayreminder;
+
+import java.text.ParseException;
+import java.util.Objects;
+
+/**
+ * PoC of email normalization tool.
+ *
+ * &lt;p&gt;Normalization mean:
+ *
+ * &lt;ul&gt;
+ * &lt;li&gt;trim all whitespaces and other blanks around address&lt;/li&gt;
+ * &lt;li&gt;domain part (after @) to lowercase&lt;/li&gt;
+ * &lt;li&gt;local part cleansed from aliases – everything between + and @&lt;/li&gt;
+ * &lt;li&gt;local part to lowercase – this is not valid against RFC but most of
+ * software tread local part as case insensitive&lt;/li&gt;
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;Product of normalization is @NormalizedEmail class.
+ */
+<span class="nc" id="L21">public class EmailNormalization {</span>
+
+	/**
+	 * Normalize given email address.
+	 *
+	 * @param email
+	 *            raw address.
+	 * @return Normalized address.
+	 * @throws ParseException
+	 *             when #email is not correct email address.
+	 */
+	public static NormalizedEmail normalize(String email) throws ParseException {
+<span class="fc" id="L33">		Objects.requireNonNull(email);</span>
+<span class="fc" id="L34">		final int domainIndex = email.lastIndexOf('@');</span>
+<span class="fc bfc" id="L35" title="All 6 branches covered.">		if (domainIndex == -1 || domainIndex == 0 || domainIndex + 1 == email.length()) {</span>
+<span class="fc" id="L36">			throw new ParseException(&quot;This is not an email!&quot;, 0);</span>
+		}
+
+<span class="fc" id="L39">		final String localPartMaybeWithAliases = email.substring(0, domainIndex).trim();</span>
+<span class="fc" id="L40">		final String domain = email.substring(domainIndex + 1).trim().toLowerCase();</span>
+
+<span class="fc" id="L42">		final int aliasIndex = localPartMaybeWithAliases.indexOf('+');</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">		if (aliasIndex &gt; 0) {</span>
+<span class="fc" id="L44">			return processAlias(localPartMaybeWithAliases, aliasIndex, domain, email);</span>
+		}
+
+<span class="fc" id="L47">		final String normalizedLocalPart = localPartMaybeWithAliases.toLowerCase();</span>
+
+<span class="fc" id="L49">		return new NormalizedEmail(normalizedLocalPart + &quot;@&quot; + domain, email.trim(),</span>
+				normalizedLocalPart, domain, localPartMaybeWithAliases);
+	}
+
+	private static NormalizedEmail processAlias(String localPartMaybeWithAliases,
+			int aliasIndex, String domain, String email) {
+<span class="fc" id="L55">		final String localPart = localPartMaybeWithAliases.substring(0, aliasIndex);</span>
+<span class="fc" id="L56">		final String normalizedLocalPart = localPart.toLowerCase();</span>
+<span class="fc" id="L57">		return new NormalizedEmail(normalizedLocalPart + &quot;@&quot; + domain, email.trim(),</span>
+				normalizedLocalPart, domain, localPartMaybeWithAliases);
+	}
+
+	/**
+	 * Email after normalization. Two emails are equal in meaning of
+	 * {@link #equals(Object)} method,
+	 * when they normal forms are equal.
+	 *
+	 * @param normalForm
+	 *            normal form of address without aliases.
+	 * @param commonForm
+	 *            raw form.
+	 * @param localPart
+	 *            local part of email address (before @ symbol) without aliases.
+	 * @param domainPart
+	 *            domain part of email (after @ symbol).
+	 * @param localPartWithAliases
+	 *            local part of email address (before @ symbol) with all aliases.
+	 */
+<span class="fc" id="L77">	public record NormalizedEmail(String normalForm, String commonForm,</span>
+			String localPart, String domainPart,
+			String localPartWithAliases) {
+
+		/**
+		 * Check equality in meaing of {@link #equals(Object)} method for common form.
+		 *
+		 * @param that
+		 *            nullable {@link NormalizedEmail} object.
+		 * @return true when {@link #commonForm}s are equal. Otherwise, return false.
+		 */
+		public boolean strictEquals(NormalizedEmail that) {
+<span class="nc" id="L89">			return Objects.equals(this.commonForm, that.commonForm);</span>
+		}
+
+		/**
+		 * Check equality of objects based on {@link #normalForm}.
+		 *
+		 * @param o
+		 *            another object.
+		 * @return true when {@link #normalForm}s are equal. Otherwise, return false.
+		 */
+		@Override
+		public boolean equals(Object o) {
+<span class="nc bnc" id="L101" title="All 2 branches missed.">			if (this == o) {</span>
+<span class="nc" id="L102">				return true;</span>
+			}
+<span class="nc bnc" id="L104" title="All 4 branches missed.">			if (o == null || getClass() != o.getClass()) {</span>
+<span class="nc" id="L105">				return false;</span>
+			}
+<span class="nc" id="L107">			NormalizedEmail that = (NormalizedEmail) o;</span>
+<span class="nc" id="L108">			return normalForm.equals(that.normalForm);</span>
+		}
+
+		/**
+		 * Calculates hashCode based on {@link #normalForm}.
+		 *
+		 * @return hashCode value of this object.
+		 */
+		@Override
+		public int hashCode() {
+<span class="nc" id="L118">			return Objects.hash(normalForm);</span>
+		}
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

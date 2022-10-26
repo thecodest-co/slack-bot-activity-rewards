@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthViaEnvModule.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">activity-rewards</a> &gt; <a href="index.source.html" class="el_package">com.thecodest.slack.activityrewards.auth</a> &gt; <span class="el_source">AuthViaEnvModule.java</span></div><h1>AuthViaEnvModule.java</h1><pre class="source lang-java linenums">package com.thecodest.slack.activityrewards.auth;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.name.Names;
+
+/**
+ * Module configure authentication for Slack and Calamari.
+ *
+ * &lt;p&gt;Looking for:
+ * &lt;ul&gt;
+ * &lt;li&gt;SLACK_TOKEN&lt;/li&gt;
+ * &lt;li&gt;SLACK_CHANNEL&lt;/li&gt;
+ * &lt;/ul&gt;
+ * Environment variables.
+ */
+<span class="fc" id="L16">public class AuthViaEnvModule extends AbstractModule {</span>
+
+	/**
+	 * Read environment variables and set them into named Strings.
+	 * &lt;ul&gt;
+	 * &lt;li&gt;SLACK_TOKEN » slack-token&lt;/li&gt;
+	 * &lt;li&gt;SLACK_CHANNEL » slack-channel&lt;/li&gt;
+	 * &lt;/ul&gt;&gt;
+	 */
+	@Override
+	protected void configure() {
+<span class="fc" id="L27">		bind(String.class)</span>
+<span class="fc" id="L28">				.annotatedWith(Names.named(&quot;slack-token&quot;))</span>
+<span class="fc" id="L29">				.toInstance(System.getenv(&quot;SLACK_TOKEN&quot;));</span>
+<span class="fc" id="L30">		bind(String.class)</span>
+<span class="fc" id="L31">				.annotatedWith(Names.named(&quot;slack-channel&quot;))</span>
+<span class="fc" id="L32">				.toInstance(System.getenv(&quot;SLACK_CHANNEL&quot;));</span>
+
+<span class="fc" id="L34">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

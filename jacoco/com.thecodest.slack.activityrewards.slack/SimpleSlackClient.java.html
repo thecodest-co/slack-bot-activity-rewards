@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SimpleSlackClient.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">activity-rewards</a> &gt; <a href="index.source.html" class="el_package">com.thecodest.slack.activityrewards.slack</a> &gt; <span class="el_source">SimpleSlackClient.java</span></div><h1>SimpleSlackClient.java</h1><pre class="source lang-java linenums">package com.thecodest.slack.activityrewards.slack;
+
+import static java.util.function.Predicate.not;
+
+import com.slack.api.Slack;
+import com.slack.api.methods.MethodsClient;
+import com.slack.api.methods.request.conversations.ConversationsHistoryRequest;
+import com.slack.api.methods.request.users.UsersListRequest;
+import com.slack.api.methods.response.chat.ChatPostMessageResponse;
+import com.slack.api.methods.response.users.UsersListResponse;
+import com.thecodest.slack.activityrewards.MessageBeing;
+import io.vavr.control.Try;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Predicate;
+import javax.inject.Inject;
+import javax.inject.Named;
+import lombok.extern.java.Log;
+
+<span class="fc" id="L22">@Log</span>
+class SimpleSlackClient implements SlackClient {
+
+	private final MethodsClient methods;
+
+	@Inject
+<span class="fc" id="L28">	SimpleSlackClient(@Named(&quot;slack-token&quot;) String token) {</span>
+<span class="fc" id="L29">		this.methods = Slack.getInstance().methods(token);</span>
+<span class="fc" id="L30">	}</span>
+
+	@Override
+	public ChatPostMessageResponse sendMessageToUser(SlackUser slackUser, String message) {
+<span class="nc" id="L34">		log.info(&quot;Send message to &quot; + slackUser.normalizedEmail());</span>
+<span class="nc" id="L35">		return Try.of(() -&gt; methods.chatPostMessage(req -&gt; req.channel(slackUser.slackId()).text(message)))</span>
+<span class="nc" id="L36">				.onFailure(Throwable::printStackTrace)</span>
+<span class="nc" id="L37">				.get();</span>
+	}
+
+	@Override
+	public ChatPostMessageResponse sendMessageToChannel(String slackChannel, String message) {
+<span class="nc" id="L42">		log.info(&quot;Send message to &quot; + slackChannel);</span>
+<span class="nc" id="L43">		return Try.of(() -&gt; methods.chatPostMessage(req -&gt; req.channel(slackChannel).text(message)))</span>
+<span class="nc" id="L44">				.onFailure(Throwable::printStackTrace)</span>
+<span class="nc" id="L45">				.get();</span>
+	}
+
+	@Override
+	public List&lt;SlackUser&gt; getUsersByEmails(List&lt;String&gt; emails) {
+<span class="nc" id="L50">		log.info(&quot;Get users from slack&quot;);</span>
+<span class="nc" id="L51">		log.info(emails.toString());</span>
+<span class="nc" id="L52">		return getUsersByFilter(su -&gt; emails.contains(su.normalizedEmail()));</span>
+	}
+
+	@Override
+	public List&lt;SlackUser&gt; getUsersByIds(List&lt;String&gt; ids) {
+<span class="nc" id="L57">		log.info(&quot;Get users from slack&quot;);</span>
+<span class="nc" id="L58">		log.info(ids.toString());</span>
+<span class="nc" id="L59">		final Predicate&lt;SlackUser&gt; idsPredicate = su -&gt; ids.contains(su.slackId());</span>
+<span class="nc" id="L60">		final Predicate&lt;SlackUser&gt; cody = su -&gt; su.name().equalsIgnoreCase(&quot;cody&quot;);</span>
+<span class="nc" id="L61">		return getUsersByFilter(idsPredicate.and(not(cody)));</span>
+	}
+
+	@Override
+	public List&lt;MessageBeing&gt; getMessagesFromChannel(String channelId, LocalDateTime from, LocalDateTime to) {
+<span class="nc" id="L66">		ConversationsHistoryRequest request = ConversationsHistoryRequest.builder()</span>
+<span class="nc" id="L67">				.channel(channelId)</span>
+<span class="nc" id="L68">				.oldest(toTs(from))</span>
+<span class="nc" id="L69">				.latest(toTs(to))</span>
+<span class="nc" id="L70">				.build();</span>
+<span class="nc" id="L71">		return Try.of(() -&gt; methods.conversationsHistory(request))</span>
+<span class="nc" id="L72">				.map(chr -&gt; chr.getMessages()</span>
+<span class="nc" id="L73">						.stream()</span>
+<span class="nc" id="L74">						.map(m -&gt; new MessageBeing(m.getUser(), m.hashCode()))</span>
+<span class="nc" id="L75">						.toList())</span>
+<span class="nc" id="L76">				.getOrElse(Collections.emptyList());</span>
+	}
+
+	private String toTs(LocalDateTime ldt) {
+<span class="nc bnc" id="L80" title="All 2 branches missed.">		if (ldt == null) {</span>
+<span class="nc" id="L81">			return null;</span>
+		}
+<span class="nc" id="L83">		return ldt.atZone(ZoneId.systemDefault()).toEpochSecond() + &quot;&quot;;</span>
+	}
+
+	private List&lt;SlackUser&gt; getUsersByFilter(Predicate&lt;SlackUser&gt; predicate) {
+<span class="nc" id="L87">		return Try.of(() -&gt; methods</span>
+<span class="nc" id="L88">				.usersList(UsersListRequest.builder().build()))</span>
+<span class="nc" id="L89">				.onFailure(Throwable::printStackTrace)</span>
+<span class="nc" id="L90">				.map(UsersListResponse::getMembers)</span>
+<span class="nc" id="L91">				.getOrElse(Collections.emptyList())</span>
+<span class="nc" id="L92">				.stream()</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">				.filter(u -&gt; u.getProfile().getEmail() != null)</span>
+<span class="nc" id="L94">				.map(u -&gt; new SlackUser(u.getId(), u.getName(), u.getProfile().getEmail()))</span>
+<span class="nc" id="L95">				.filter(predicate)</span>
+<span class="nc" id="L96">				.toList();</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
