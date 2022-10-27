@@ -48,7 +48,10 @@ You need to pass environment properties mentioned above to container:
 
 ```bash
 docker run --rm -e SLACK_TOKEN=<SLACK_TOKEN> \
-  -e DAYS_LIMIT=<DAYS_LIMIT> \
+  -e SLACK_CHANNEL=<SLACK_CHANNEL> \
+  -e AWS_ACCESS_KEY=<AWS_ACCESS_KEY> \
+  -e AWS_SECRET_KEY=<AWS_SECRET_KEY> \
+  -e AWS_REGION=<AWS_REGION> \
   --name activity-rewards \
   -it activity-rewards:latest
 ```
@@ -65,8 +68,9 @@ You need to set up some secrets:
 
 - `AWS_ACCESS_KEY_ID`
 - `AWS_SECRET_ACCESS_KEY`
+- `AWS_REGION`
 - `SLACK_TOKEN`
-- `DAYS_LIMIT`
+- `SLACK_CHANNEL`
 
 First two are about your AWS account. Remember that if you use user „Access key - Programmatic access” then you need to
 configure proper rights to AWS Lambda, AWS ECR and AWS Events. Other four are described above and will be copy to AWS
