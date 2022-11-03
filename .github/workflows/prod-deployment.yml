@@ -15,6 +15,7 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_REGION: eu-central-1
   TEST_RUN: ${{ secrets.TEST_RUN }}
+  RUN_RULE: cron(0 9 * * ? *)
 
 jobs:
   build:
