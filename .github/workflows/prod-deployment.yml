@@ -12,6 +12,9 @@ env:
   IMAGE_TAG: activity-rewards
   SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
   SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_CODY_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_REGION: eu-central-1
   TEST_RUN: ${{ secrets.TEST_RUN }}
 
 jobs:
@@ -75,7 +78,7 @@ jobs:
           echo $IAM_ROLE
           role=$(aws iam list-roles --query "Roles[?RoleName == '$IAM_ROLE'].Arn" --output text)
           echo $role
-          fun_arn=$(aws lambda create-function --function-name $IMAGE_TAG --role $role --code ImageUri=$IMAGE_URI --package-type Image --timeout 60 --environment "Variables={SLACK_TOKEN=$SLACK_TOKEN,CALAMARI_USERNAME=$CALAMARI_USERNAME,CALAMARI_PASSWORD=$CALAMARI_PASSWORD,DAYS_LIMIT=$DAYS_LIMIT,TEST_RUN=$TEST_RUN}" --query 'FunctionArn' --output text)
+          fun_arn=$(aws lambda create-function --function-name $IMAGE_TAG --role $role --code ImageUri=$IMAGE_URI --package-type Image --timeout 60 --environment "Variables={SLACK_TOKEN=$SLACK_TOKEN,AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY,AWS_REGION=$AWS_REGION,SLACK_CHANNEL=$SLACK_CHANNEL,TEST_RUN=$TEST_RUN}" --query 'FunctionArn' --output text)
           echo $fun_arn
           aws lambda wait function-updated --function-name $fun_arn          
           aws events put-rule --name $IMAGE_TAG-trigger --schedule-expression $RUN_RULE 
