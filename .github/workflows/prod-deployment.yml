@@ -3,8 +3,7 @@ name: Build & deploy to prod
 on:
   workflow_dispatch:
   push:
-    branches:
-      - 'non-op'
+    branches: [ master ]
 
 env:
   ECR_REPOSITORY: codest
