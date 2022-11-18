@@ -17,7 +17,8 @@ class AppTest {
 				"SLACK_CHANNEL", "SLACK_CHANNEL",
 				"AWS_ACCESS_KEY", "AWS_ACCESS_KEY",
 				"AWS_SECRET_KEY", "AWS_SECRET_KEY",
-				"AWS_REGION", Regions.EU_CENTRAL_1.getName());
+				"AWS_REGION", Regions.EU_CENTRAL_1.getName(),
+				"TEST_RUN", "false"); // we need to override this in tests
 
 		EnvironmentVariables env = new EnvironmentVariables(props);
 		assertDoesNotThrow(() -> env.execute(() -> App.main(new String[]{})));
