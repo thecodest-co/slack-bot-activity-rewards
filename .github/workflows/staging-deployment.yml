@@ -79,11 +79,11 @@ jobs:
           role=$(aws iam list-roles --query "Roles[?RoleName == '$IAM_ROLE'].Arn" --output text)
           echo $role
           fun_arn=$(aws lambda create-function --function-name $IMAGE_TAG --role $role --code ImageUri=$IMAGE_URI --package-type Image --timeout 60 --environment "Variables={SLACK_TOKEN=$SLACK_TOKEN,SLACK_CHANNEL=$SLACK_CHANNEL,TEST_RUN=$TEST_RUN}" --query 'FunctionArn' --output text)
-          echo $fun_arn
+          echo Function ARN: $fun_arn
           aws lambda wait function-updated --function-name $fun_arn          
           aws events put-rule --name $IMAGE_TAG-trigger --schedule-expression $RUN_RULE 
           rule_arn=$(aws events list-rules --query "Rules[?Name == '$IMAGE_TAG-trigger'].Arn" --output text)
-          echo $rule_arn
+          echo Rule ARN: $rule_arn
           aws lambda add-permission --function-name $IMAGE_TAG --statement-id $IMAGE_TAG-trigger --action 'lambda:InvokeFunction' --principal events.amazonaws.com --source-arn $rule_arn
           aws lambda wait function-updated --function-name $fun_arn          
           aws lambda publish-version --function-name $IMAGE_TAG
