@@ -96,7 +96,7 @@ jobs:
           fun_arn=$(aws lambda list-functions --query "Functions[?FunctionName == '$IMAGE_TAG'].FunctionArn" --output text)
           aws lambda update-function-code --function-name $fun_arn --image-uri $IMAGE_URI > /dev/null
           aws lambda wait function-updated --function-name $fun_arn
-          aws lambda update-function-configuration --function-name $fun_arn --timeout 60 --environment "Variables={SLACK_TOKEN=$SLACK_TOKEN,SLACK_CHANNEL=$SLACK_CHANNEL,TEST_RUN=$TEST_RUN}" > /dev/null
+          aws lambda update-function-configuration --function-name $fun_arn --timeout 120 --environment "Variables={SLACK_TOKEN=$SLACK_TOKEN,SLACK_CHANNEL=$SLACK_CHANNEL,TEST_RUN=$TEST_RUN}" > /dev/null
           aws lambda wait function-updated --function-name $fun_arn
           aws lambda publish-version --function-name $IMAGE_TAG
           aws lambda wait function-updated --function-name $fun_arn
