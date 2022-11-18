@@ -7,11 +7,19 @@ on:
 
 env:
   ECR_REPOSITORY: codest
-  IMAGE_TAG: holiday-reminder
+  IAM_ROLE: lambda_exe
+  IMAGE_TAG: activity-rewards-stg
+  SLACK_TOKEN: ${{ secrets.SLACK_TOKEN_STG }}
+  SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL_STG }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_CODY_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_REGION: eu-central-1
+  TEST_RUN: ${{ secrets.TEST_RUN_STG }}
+  RUN_RULE: cron(0 9 * * ? *)
 
 jobs:
   build:
-    name: Build & Deploy to staging
+    name: Build & Deploy to STG
     runs-on: ubuntu-latest
     environment: staging
 
@@ -27,12 +35,27 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@master
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-access-key-id: ${{ secrets.AWS_CODY_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
+      - name: Maybe create role
+        id: role-state
+        run: |
+          status=x-$(aws iam list-roles --query "Roles[?RoleName == '$IAM_ROLE'].Arn" --output text)
+          if [ "x-" == $status ] ; then
+            echo "Creating role lambda-exe";
+            aws iam create-role --role-name $IAM_ROLE --assume-role-policy-document '{"Version": "2012-10-17","Statement": [{ "Effect": "Allow", "Principal": {"Service": "lambda.amazonaws.com"}, "Action": "sts:AssumeRole"}]}';
+          else
+            echo "Role lambda-exe already exists";
+          fi
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
+      - name: Maybe create repository
+        id: create-repository
+        run: |
+          status=x-$(aws ecr describe-repositories --query "repositories[?repositoryName == '$ECR_REPOSITORY'].repositoryName" --output text)
+          if [ "x-" == $status ] ; then echo "Creating repository $ECR_REPOSITORY"; aws ecr create-repository --repository-name $ECR_REPOSITORY; else echo "Repository $ECR_REPOSITORY already exists"; fi
       - name: Push image to Amazon ECR
         id: build-push-ecr
         env:
@@ -41,9 +64,44 @@ jobs:
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG . 
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-      - name: Update Lambda function
-        id: update-lambda
+      - name: Check function state
+        id: function-state
+        run: |
+          status=x-$(aws lambda list-functions --query "Functions[?FunctionName == '$IMAGE_TAG'].FunctionName" --output text)
+          echo "::set-output name=fun-exist::$status"
+      - name: Create Lambda function
+        id: create-lambda
+        if: steps.function-state.outputs.fun-exist == 'x-'
         env:
           IMAGE_URI: ${{ steps.build-push-ecr.outputs.image }}
         run: |
-          aws lambda update-function-code --function-name holiday-reminder --image-uri $IMAGE_URI > /dev/null
+          echo $IAM_ROLE
+          role=$(aws iam list-roles --query "Roles[?RoleName == '$IAM_ROLE'].Arn" --output text)
+          echo $role
+          fun_arn=$(aws lambda create-function --function-name $IMAGE_TAG --role $role --code ImageUri=$IMAGE_URI --package-type Image --timeout 60 --environment "Variables={SLACK_TOKEN=$SLACK_TOKEN,SLACK_CHANNEL=$SLACK_CHANNEL,TEST_RUN=$TEST_RUN}" --query 'FunctionArn' --output text)
+          echo $fun_arn
+          aws lambda wait function-updated --function-name $fun_arn          
+          aws events put-rule --name $IMAGE_TAG-trigger --schedule-expression $RUN_RULE 
+          rule_arn=$(aws events list-rules --query "Rules[?Name == '$IMAGE_TAG-trigger'].Arn" --output text)
+          echo $rule_arn
+          aws lambda add-permission --function-name $IMAGE_TAG --statement-id $IMAGE_TAG-trigger --action 'lambda:InvokeFunction' --principal events.amazonaws.com --source-arn $rule_arn
+          aws lambda wait function-updated --function-name $fun_arn          
+          aws lambda publish-version --function-name $IMAGE_TAG
+      - name: Update Lambda function
+        id: update-lambda
+        if: steps.function-state.outputs.fun-exist != 'x-'
+        env:
+          IMAGE_URI: ${{ steps.build-push-ecr.outputs.image }}
+        run: |
+          fun_arn=$(aws lambda list-functions --query "Functions[?FunctionName == '$IMAGE_TAG'].FunctionArn" --output text)
+          aws lambda update-function-code --function-name $fun_arn --image-uri $IMAGE_URI > /dev/null
+          aws lambda wait function-updated --function-name $fun_arn
+          aws lambda update-function-configuration --function-name $fun_arn --timeout 60 --environment "Variables={SLACK_TOKEN=$SLACK_TOKEN,SLACK_CHANNEL=$SLACK_CHANNEL,TEST_RUN=$TEST_RUN}" > /dev/null
+          aws lambda wait function-updated --function-name $fun_arn
+          aws lambda publish-version --function-name $IMAGE_TAG
+          aws lambda wait function-updated --function-name $fun_arn
+      - name: Test run
+        if: ${{ env.TEST_RUN }}
+        run: |
+          fun_arn=$(aws lambda list-functions --query "Functions[?FunctionName == '$IMAGE_TAG'].FunctionArn" --output text)
+          aws lambda invoke --function-name $fun_arn /tmp/out.json
